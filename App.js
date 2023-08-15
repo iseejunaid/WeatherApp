@@ -87,13 +87,13 @@ export default function App() {
         setLowTemperature(Math.floor(data.list[0].main.temp_min));
         setweatherState(data.list[0].weather[0].main);    
 
-        setWeatherPredictions(data.list.slice(1, 4))
+        setWeatherPredictions(data.list.slice(1, 6))
 
         const currentDate = new Date();
         const nextdays = new Date(currentDate);
         const nextDaysName =[]
         const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-        for(var i=0;i<3;i++){
+        for(var i=0;i<weatherPredictions.length;i++){
           nextdays.setDate(currentDate.getDate() + i+1);
           const nextDaysOfWeek = nextdays.getDay();
           nextDaysName.push(daysOfWeek[nextDaysOfWeek]);
@@ -158,7 +158,11 @@ export default function App() {
 
           </View>
       </View>
+
       <TouchableOpacity style={styles.header2} onPress={showTemperatureOptions}>
+        <FontAwesome style={styles.header2icon} name="search" size={35} color="black" />
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.header3} onPress={showTemperatureOptions}>
         <Ionicons name="ios-settings-outline" size={35} color="black" />
       </TouchableOpacity>
       </View>
@@ -305,15 +309,23 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   header1:{
-    width:'80%',
+    width:'65%',
     height:'40%',
+    // backgroundColor:'blue'
   },
   header2:{
+    height:'40%',
+    width:'15%',
+    // backgroundColor:'yellow'
+  },
+  header2icon:{marginLeft:'40%'},
+  header3:{
   width:'20%',
   height:'40%',
   alignItems:'center',
   justifyContent:'center',
-  marginBottom:'2%'
+  marginBottom:'1.5%',
+  // backgroundColor:'red'
   },
   loctxt: {
     fontSize: 25,
