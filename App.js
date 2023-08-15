@@ -6,20 +6,27 @@ import { Ionicons } from '@expo/vector-icons';
 
 
 export default function App() {
-  const data = [
-    { label: 'California', value: 'CA' },
-    { label: 'Texas', value: 'TX' },
-    { label: 'New York', value: 'NY' },
-    { label: 'Florida', value: 'FL' },
-    { label: 'Illinois', value: 'IL' },
-    { label: 'Pennsylvania', value: 'PA' },
-    { label: 'Ohio', value: 'OH' },
-    { label: 'Georgia', value: 'GA' },
-  ];  
+  const citydata = [
+    { label: 'California', value: 'CA', latitude: 36.7783, longitude: -119.4179 },
+    { label: 'Texas', value: 'TX', latitude: 31.9686, longitude: -99.9018 },
+    { label: 'New York', value: 'NY', latitude: 40.7128, longitude: -74.0060 },
+    { label: 'Florida', value: 'FL', latitude: 27.994402, longitude: -81.760254 },
+    { label: 'Illinois', value: 'IL', latitude: 40.6331, longitude: -89.3985 },
+    { label: 'Pennsylvania', value: 'PA', latitude: 41.2033, longitude: -77.1945 },
+    { label: 'Ohio', value: 'OH', latitude: 40.4173, longitude: -82.9071 },
+    { label: 'Georgia', value: 'GA', latitude: 32.1656, longitude: -82.9001 },
+  ];
+
   const [value, setValue] = useState('NY');
+  const [long,setLong] = useState('-74.0060');
+  const [lat,setLat] = useState('40.7128');
   const [isFocus, setIsFocus] = useState(false);
   const [temperatureUnit, setTemperatureUnit] = useState('celsius');
 
+  const apiKey = '322d5e6f8be8ff587e21d0cac53d4f0c';
+  const apiUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${long}&appid=${apiKey}`;
+
+  
   const showTemperatureOptions = () => {
     Alert.alert(
       'Select Temperature Unit',
@@ -51,22 +58,37 @@ export default function App() {
   }, [temperatureUnit]);
 
   useEffect(() => {
-    console.log(value);
+    const selectedLocation = citydata.find(item => item.value === value);
+    if (selectedLocation) {
+      console.log('Selected Location:', selectedLocation.label);
+      setLat(selectedLocation.latitude);
+      setLong(selectedLocation.longitude);
+    }
   }, [value]);
+
+  useEffect(()=>{
+    console.log(lat+", "+long);
+
+    fetch(apiUrl)
+      .then(response => response.json())
+      .then(data => {
+        console.log('API Response Data:', data);
+      })
+      .catch(error => {
+        console.log('Error!', error);
+      });
+  },[lat,long])
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
       <View style={styles.header1}>
-      <View style={styles.dropdownContainer}>
+      <View>
 
       <Dropdown
-        style={[isFocus && { borderColor: 'blue' }]}
-        placeholderStyle={styles.placeholderStyle}
+        style={[isFocus && { borderColor: 'blue'}]}
         selectedTextStyle={styles.loctxt}
-        inputSearchStyle={styles.inputSearchStyle}
-        iconStyle={styles.iconStyle}
-        data={data}
+        data={citydata}
         maxHeight={300}
         labelField="label"
         valueField="value"
@@ -175,9 +197,6 @@ const styles = StyleSheet.create({
   alignItems:'center',
   justifyContent:'center',
   marginBottom:'2%'
-  },
-  dropdownContainer: {
-    width:'60%'
   },
   loctxt: {
     fontSize: 25,
