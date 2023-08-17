@@ -1,31 +1,30 @@
 import React, { useState,useEffect } from 'react';
-import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { Dropdown } from 'react-native-element-dropdown';
+import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View, Modal,FlatList } from 'react-native';
 import BottomComponent from '../Components/BottomComponent'
 import { useNavigation } from '@react-navigation/native';
 import { apiKey } from '../ApiKeys/OpenWeatherapi';
 import { Feather,Ionicons,FontAwesome } from '@expo/vector-icons'; 
+import { useRoute } from '@react-navigation/native';
+
 
 
 export default function Home() {
   const citydata = [
-    { label: 'California', value: 'CA', latitude: 36.7783, longitude: -119.4179 },
-    { label: 'Texas', value: 'TX', latitude: 31.9686, longitude: -99.9018 },
-    { label: 'New York', value: 'NY', latitude: 40.7128, longitude: -74.0060 },
-    { label: 'Florida', value: 'FL', latitude: 27.994402, longitude: -81.760254 },
-    { label: 'Illinois', value: 'IL', latitude: 40.6331, longitude: -89.3985 },
-    { label: 'Pennsylvania', value: 'PA', latitude: 41.2033, longitude: -77.1945 },
-    { label: 'Ohio', value: 'OH', latitude: 40.4173, longitude: -82.9071 },
-    { label: 'Georgia', value: 'GA', latitude: 32.1656, longitude: -82.9001 },
-    { label: 'Lahore', value: 'LHR', latitude: 31.5497, longitude: 74.3436 },
-    { label: 'Islamabad', value: 'ISB', latitude: 33.6844, longitude: 73.0479 },
-  ];  
+    { label: 'California' },
+    { label: 'Texas' },
+    { label: 'New York' },
+    { label: 'Florida' },
+    { label: 'Illinois' },
+    { label: 'Pennsylvania' },
+    { label: 'Ohio' },
+    { label: 'Georgia' },
+    { label: 'Lahore' },
+    { label: 'Islamabad' },
+]; 
 
   const [isLoading, setIsLoading] = useState(true);
-  const [value, setValue] = useState('NY');
-  const [long,setLong] = useState('-74.0060');
-  const [lat,setLat] = useState('40.7128');
-  const [isFocus, setIsFocus] = useState(false);
+  const [currCity, setcurrCity] = useState('Lahore');
+  const [modalVisible, setModalVisible] = useState(false);
   const [temperatureUnit, setTemperatureUnit] = useState('metric');
 
   const [currtemp, setcurrTemp] = useState('0');
@@ -41,11 +40,11 @@ export default function Home() {
     navigation.navigate('CitySearch');
   };
 
-  // const selectedCity = route.params?.city;
+  route = useRoute();
+  const searchedCity = route.params?.city;
 
-  const apiUrl = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${long}&units=${temperatureUnit}&appid=${apiKey}`;
+  useEffect(() => { console.log(searchedCity); }, [searchedCity]);
 
-  
   const showTemperatureOptions = () => {
     Alert.alert(
       'Select Temperature Unit',
@@ -73,50 +72,47 @@ export default function Home() {
   };
 
   useEffect(() => {
-    console.log(temperatureUnit); 
-  }, [temperatureUnit]);
+    fetchWeather(currCity);
+    console.log("Current City: "+currCity);
+    console.log("Current Temperature Unit: "+temperatureUnit);
+  }, [currCity, temperatureUnit]);
 
-  useEffect(() => {
-    const selectedLocation = citydata.find(item => item.value === value);
-    if (selectedLocation) {
-      console.log('Selected Location:', selectedLocation.label);
-      setLat(selectedLocation.latitude);
-      setLong(selectedLocation.longitude);
-    }
-  }, [value]);
+  const handleCitySelect = (city) => {
+    setcurrCity(city);
+    setModalVisible(false);
+  };
 
-  useEffect(()=>{
-    console.log(lat+", "+long);
+  function fetchWeather(cityName) {
+    const apiUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${cityName}&units=${temperatureUnit}&appid=${apiKey}`;
 
     fetch(apiUrl)
-      .then(response => response.json())
-      .then(data => {
-        setcurrTemp(Math.ceil(data.list[0].main.temp));
-        setHighTemperature(Math.ceil(data.list[0].main.temp_max));
-        setLowTemperature(Math.floor(data.list[0].main.temp_min));
-        setweatherState(data.list[0].weather[0].main);    
+        .then(response => response.json())
+        .then(data => {
+                      
+            setcurrTemp(Math.ceil(data.list[0].main.temp));
+            setHighTemperature(Math.ceil(data.list[0].main.temp_max));
+            setLowTemperature(Math.floor(data.list[0].main.temp_min));
+            setweatherState(data.list[0].weather[0].main);
 
-        setWeatherPredictions(data.list.slice(1, 6))
+            const weatherPredictions = data.list.slice(1, 6);
+            setWeatherPredictions(weatherPredictions);
 
-        const currentDate = new Date();
-        const nextdays = new Date(currentDate);
-        const nextDaysName =[]
-        const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-        for(var i=0;i<weatherPredictions.length;i++){
-          nextdays.setDate(currentDate.getDate() + i+1);
-          const nextDaysOfWeek = nextdays.getDay();
-          nextDaysName.push(daysOfWeek[nextDaysOfWeek]);
-        }
-        setnextdays(nextDaysName);
-        setIsLoading(false);
-       })
-      .catch(error => {
-        console.log('Error!', error);
-        setIsLoading(false);
-      });
-    
-  },[lat,long,temperatureUnit])
+            const currentDate = new Date();
+            const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+            const nextDaysName = weatherPredictions.map((_, i) => {
+                const nextDays = new Date(currentDate);
+                nextDays.setDate(currentDate.getDate() + i + 1);
+                return daysOfWeek[nextDays.getDay()];
+            });
+            setnextdays(nextDaysName);
 
+            setIsLoading(false);
+        })
+        .catch(error => {
+            console.log('Error!', error);
+            setIsLoading(false);
+        });
+  }
   const getBackgroundColor = () => {
     if (weatherstate === 'Clear') {
       return '#48AEFF'; 
@@ -142,30 +138,36 @@ export default function Home() {
       </View>
     );
   }
-
   return (
     <View style={[styles.container,{backgroundColor:getBackgroundColor()}]}>
       <View style={styles.header}>
       <View style={styles.header1}>
-      <View>
-
-      <Dropdown
-        style={[isFocus && { borderColor: 'blue'}]}
-        selectedTextStyle={styles.loctxt}
-        data={citydata}
-        maxHeight={300}
-        labelField="label"
-        valueField="value"
-        value={value}
-        onFocus={() => setIsFocus(true)}
-        onBlur={() => setIsFocus(false)}
-        onChange={(item) => {
-          setValue(item.value);
-          setIsFocus(false);
-        }}
-      />
-
+      <TouchableOpacity onPress={() => setModalVisible(true)}>
+        <Text style={styles.loctxt}>{currCity}</Text>  
+      </TouchableOpacity>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}>
+        <View style={styles.modalBackground}>
+          <View style={styles.modalforeground}>
+            <FlatList
+              data={citydata}
+              keyExtractor={(item) => item.label}
+              style={{ flexGrow: 0 }}
+              renderItem={({ item }) => (
+                <TouchableOpacity onPress={() => handleCitySelect(item.label)}>
+                  <Text style={styles.modaltxt}>{item.label}</Text>
+                </TouchableOpacity>
+              )}
+            />
           </View>
+        </View>
+      </Modal>
+
+
+
       </View>
 
       <TouchableOpacity style={styles.header2} onPress={goToCitySearch}>
@@ -269,8 +271,11 @@ const styles = StyleSheet.create({
   loctxt: {
     fontSize: 25,
     fontWeight: 'bold',
-    marginLeft: '10%'
+    left:"20%",
   },
+  modalBackground: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0, 0, 0, 0.5)' },
+  modalforeground: { width: '60%', height: '50%', backgroundColor: 'white', borderRadius: 10, padding: 10 },
+  modaltxt: { paddingVertical: 10, fontSize: 18 ,alignSelf:'center'},
   degreeView:{ flexDirection: 'row', alignItems: 'flex-start',left:160},
   degreesign:{
     width: 10,
