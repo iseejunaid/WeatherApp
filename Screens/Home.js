@@ -9,24 +9,18 @@ import { useRoute } from '@react-navigation/native';
 
 
 export default function Home() {
-  const citydata = [
-    { label: 'California' },
-    { label: 'Texas' },
-    { label: 'New York' },
-    { label: 'Florida' },
-    { label: 'Illinois' },
-    { label: 'Pennsylvania' },
-    { label: 'Ohio' },
-    { label: 'Georgia' },
+  const [citydata,setCityData] = useState([
     { label: 'Lahore' },
     { label: 'Islamabad' },
-]; 
+]); 
 
+  route = useRoute();
+  const searchedCity = route.params?.city;
   const [isLoading, setIsLoading] = useState(true);
   const [currCity, setcurrCity] = useState('Lahore');
   const [modalVisible, setModalVisible] = useState(false);
   const [temperatureUnit, setTemperatureUnit] = useState('metric');
-
+  const [countrycode, setcountrycode] = useState('PK');
   const [currtemp, setcurrTemp] = useState('0');
   const [highTemperature, setHighTemperature] = useState('0');
   const [lowTemperature, setLowTemperature] = useState('0');
@@ -40,10 +34,21 @@ export default function Home() {
     navigation.navigate('CitySearch');
   };
 
-  route = useRoute();
-  const searchedCity = route.params?.city;
+  const addButtonHandler = () => {
+    const isCityAlreadyAdded = citydata.some((city) => city.label === currCity);
+    if (!isCityAlreadyAdded) {
+      setCityData([...citydata, { label: currCity }]);
+      Alert.alert('Favorite added: ' + currCity);
+    } else {
+      Alert.alert('City already Favorite!');
+    }
+  };
+  
 
-  useEffect(() => { console.log(searchedCity); }, [searchedCity]);
+  useEffect(() => { 
+    console.log("Searched city: "+searchedCity);
+    setcurrCity(searchedCity); 
+  }, [searchedCity]);
 
   const showTemperatureOptions = () => {
     Alert.alert(
@@ -81,14 +86,20 @@ export default function Home() {
     setcurrCity(city);
     setModalVisible(false);
   };
+  const deleteCity = (index) => {
+    const updatedCityData = citydata.filter((_, i) => i !== index);
+    setCityData(updatedCityData);
+    setModalVisible(false);
+  };
 
   function fetchWeather(cityName) {
-    const apiUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${cityName}&units=${temperatureUnit}&appid=${apiKey}`;
+    encodedcityname = encodeURIComponent(cityName);
+    const apiUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${encodedcityname}&units=${temperatureUnit}&appid=${apiKey}`;
 
     fetch(apiUrl)
         .then(response => response.json())
         .then(data => {
-                      
+            setcountrycode(data.city.country);
             setcurrTemp(Math.ceil(data.list[0].main.temp));
             setHighTemperature(Math.ceil(data.list[0].main.temp_max));
             setLowTemperature(Math.floor(data.list[0].main.temp_min));
@@ -143,7 +154,7 @@ export default function Home() {
       <View style={styles.header}>
       <View style={styles.header1}>
       <TouchableOpacity onPress={() => setModalVisible(true)}>
-        <Text style={styles.loctxt}>{currCity}</Text>  
+        <Text style={styles.loctxt}>{currCity}, {countrycode}</Text>  
       </TouchableOpacity>
       <Modal
         animationType="slide"
@@ -152,22 +163,23 @@ export default function Home() {
         onRequestClose={() => setModalVisible(false)}>
         <View style={styles.modalBackground}>
           <View style={styles.modalforeground}>
-            <FlatList
-              data={citydata}
-              keyExtractor={(item) => item.label}
-              style={{ flexGrow: 0 }}
-              renderItem={({ item }) => (
+          <FlatList
+            data={citydata}
+            keyExtractor={(item) => item.label}
+            style={{ flexGrow: 0 }}
+            renderItem={({ item,index }) => (
+              <View style={styles.cityItem}>
                 <TouchableOpacity onPress={() => handleCitySelect(item.label)}>
                   <Text style={styles.modaltxt}>{item.label}</Text>
                 </TouchableOpacity>
-              )}
-            />
+                <TouchableOpacity onPress={() => deleteCity(index)}>
+                  <FontAwesome name="trash" size={20} color="red" />
+                </TouchableOpacity>
+              </View>
+            )}/>
           </View>
         </View>
       </Modal>
-
-
-
       </View>
 
       <TouchableOpacity style={styles.header2} onPress={goToCitySearch}>
@@ -179,11 +191,10 @@ export default function Home() {
       </TouchableOpacity>
       </View>
       
-      <View style={styles.degreeView}>
+      <View style={styles.degreeView} onStartShouldSetResponder={showTemperatureOptions}>
         <View style={styles.degreesign}></View>
         <Text style={{ fontSize: 30 }}>{temperatureUnit === 'metric' ? 'C' : 'F'}</Text>
-
-    </View>
+      </View>
 
       <View style={styles.icon}>
         {weatherstate === 'Clear' ? (
@@ -204,13 +215,13 @@ export default function Home() {
 
       <View style={styles.body}>
       <View style={styles.body1}>
-      <Text style={{ fontSize: 75,fontWeight:'bold'}}>{currtemp}</Text>
+      <Text style={{ fontSize: temperatureUnit === 'imperial' ? 74 : 75, fontWeight: 'bold' }}>{currtemp}</Text>
       </View>
       <View style={styles.body2}>
         <Text style={{fontSize:30}}>{weatherstate}</Text>
       </View>
       <View style={styles.body3}>
-        <Text style={{fontSize:30}}>{highTemperature}/{lowTemperature}</Text>
+        <Text style={{fontSize: temperatureUnit === 'imperial' ? 25 : 30}}>{highTemperature}/{lowTemperature}</Text>
       </View>
       </View>
 
@@ -227,6 +238,9 @@ export default function Home() {
           />
         ))} 
         </ScrollView>
+        <TouchableOpacity style={styles.addButton} onPress={addButtonHandler}>
+          <Text style={[styles.addButtonIcon,{color:getBackgroundColor()}]}>+</Text>
+        </TouchableOpacity>
 
       </View>
 
@@ -271,11 +285,22 @@ const styles = StyleSheet.create({
   loctxt: {
     fontSize: 25,
     fontWeight: 'bold',
-    left:"20%",
+    alignSelf: 'center',
   },
   modalBackground: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0, 0, 0, 0.5)' },
-  modalforeground: { width: '60%', height: '50%', backgroundColor: 'white', borderRadius: 10, padding: 10 },
+  modalforeground: { width: '60%',  backgroundColor: 'white', borderRadius: 10, padding: 10 },
   modaltxt: { paddingVertical: 10, fontSize: 18 ,alignSelf:'center'},
+
+  cityItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderBottomWidth: 1,
+    borderBottomColor: 'gray',
+  },
+  
   degreeView:{ flexDirection: 'row', alignItems: 'flex-start',left:160},
   degreesign:{
     width: 10,
@@ -315,5 +340,20 @@ const styles = StyleSheet.create({
     width: '100%',
     marginBottom:'4%',
     // backgroundColor:"red"
-  },   
+  },
+  addButton: {
+    position: 'absolute',
+    bottom: 20,
+    right: 20,
+    backgroundColor: 'black',
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  addButtonIcon: {
+    fontSize: 30,
+    color: 'white',
+  },
 });

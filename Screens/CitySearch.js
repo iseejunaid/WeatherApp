@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { ActivityIndicator,View, Text, FlatList, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { ActivityIndicator,View, Text, FlatList, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import {cities} from '../assets/CityNames';
 import { useNavigation } from '@react-navigation/native';
+import { apiKey } from '../ApiKeys/OpenWeatherapi';
 
 
 
@@ -21,9 +22,19 @@ const CitySearch = () => {
     setSearchText(text);
     setCityData(filtered);
   };
+  const handleSearchButtonPress = () => {
+    if (searchText) {
+      const capitalizedSearchText = searchText
+        .toLowerCase()
+        .split(' ')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ');
 
+      fetchCity(capitalizedSearchText);
+    }
+  };  
   const selectCity = (city) => {
-    navigation.navigate('Home', { city });
+    fetchCity(city);
   };
 
   const renderCityItem = ({ item }) => (
@@ -32,25 +43,46 @@ const CitySearch = () => {
     </TouchableOpacity>
   );
 
+  function fetchCity(cityName) {
+    encodedcityname = encodeURIComponent(cityName);
+    const apiUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${encodedcityname}&appid=${apiKey}`;
+
+    fetch(apiUrl)
+        .then(response => response.json())
+        .then(data => {
+          const city = data.city.name;
+          console.log("City: "+city);
+          navigation.navigate('Home', { city });
+        })
+        .catch(error => {
+            console.log('Error!', error);
+            Alert.alert("City not found!");
+        });
+  }
+
+
   return (
     <View style={styles.container}>
-    <TextInput
-      style={styles.searchBar}
-      placeholder="Search cities..."
-      value={searchText}
-      onChangeText={handleSearch}
-    />
-    {cityData.length === 0 ? (
-      <ActivityIndicator size="large" color="blue" />
-    ) : (
-      <FlatList
-        data={cityData}
-        renderItem={renderCityItem}
-        keyExtractor={(item) => item}
-        contentContainerStyle={styles.cityList}
+      <TextInput
+        style={styles.searchBar}
+        placeholder="Search cities..."
+        value={searchText}
+        onChangeText={handleSearch}
       />
-    )}
-  </View>
+      <TouchableOpacity style={styles.searchButton} onPress={handleSearchButtonPress}>
+        <Text>Search</Text>
+      </TouchableOpacity>
+      {cityData.length === 0 ? (
+        <ActivityIndicator size="large" color="blue" />
+      ) : (
+        <FlatList
+          data={cityData}
+          renderItem={renderCityItem}
+          keyExtractor={(item) => item}
+          contentContainerStyle={styles.cityList}
+        />
+      )}
+    </View>
   );
 };
 
@@ -75,6 +107,14 @@ const styles = StyleSheet.create({
     alignSelf: 'stretch',
     borderBottomWidth: 1,
     borderColor: 'black',
+  },
+  searchButton: {
+    backgroundColor: 'blue',
+    padding: 10,
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 10,
   },
 });
 

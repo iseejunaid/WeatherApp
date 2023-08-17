@@ -11,7 +11,7 @@ function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Home">
-      <Stack.Screen name="CitySearch" component={CitySearch} />
+        <Stack.Screen name="CitySearch" component={CitySearch} />
         <Stack.Screen name="Home" component={Home} options={{headerShown:false}} />
         
       </Stack.Navigator>
