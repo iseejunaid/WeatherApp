@@ -41,6 +41,8 @@ export default function Home() {
     navigation.navigate('CitySearch');
   };
 
+  // const selectedCity = route.params?.city;
+
   const apiUrl = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${long}&units=${temperatureUnit}&appid=${apiKey}`;
 
   

@@ -1,25 +1,29 @@
-import React, { useState } from 'react';
-import { View, Text, FlatList, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { ActivityIndicator,View, Text, FlatList, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import {cities} from '../assets/CityNames';
+import { useNavigation } from '@react-navigation/native';
 
-const availableCities = [
-  'New York', 'Los Angeles', 'Chicago', 'Houston', 'Miami', 'Seattle', 'San Francisco', 'Boston'
-  // Add more cities as needed
-];
+
 
 const CitySearch = () => {
   const [searchText, setSearchText] = useState('');
-  const [filteredCities, setFilteredCities] = useState(availableCities);
+  const [cityData, setCityData] = useState([]);
+  const navigation = useNavigation();
+
+  useEffect(() => {
+    setCityData(cities);
+  }, []);
 
   const handleSearch = (text) => {
-    const filtered = availableCities.filter(city =>
+    const filtered = cities.filter((city) =>
       city.toLowerCase().includes(text.toLowerCase())
     );
-    setFilteredCities(filtered);
     setSearchText(text);
+    setCityData(filtered);
   };
 
   const selectCity = (city) => {
-    // Handle the selected city, e.g., navigate to a details screen or perform an action
+    navigation.navigate('Home', { city });
   };
 
   const renderCityItem = ({ item }) => (
@@ -30,19 +34,23 @@ const CitySearch = () => {
 
   return (
     <View style={styles.container}>
-      <TextInput
-        style={styles.searchBar}
-        placeholder="Search cities..."
-        value={searchText}
-        onChangeText={handleSearch}
-      />
+    <TextInput
+      style={styles.searchBar}
+      placeholder="Search cities..."
+      value={searchText}
+      onChangeText={handleSearch}
+    />
+    {cityData.length === 0 ? (
+      <ActivityIndicator size="large" color="blue" />
+    ) : (
       <FlatList
-        data={filteredCities}
+        data={cityData}
         renderItem={renderCityItem}
         keyExtractor={(item) => item}
         contentContainerStyle={styles.cityList}
       />
-    </View>
+    )}
+  </View>
   );
 };
 
@@ -64,8 +72,9 @@ const styles = StyleSheet.create({
   },
   cityItem: {
     padding: 12,
+    alignSelf: 'stretch',
     borderBottomWidth: 1,
-    borderColor: 'lightgray',
+    borderColor: 'black',
   },
 });
 
