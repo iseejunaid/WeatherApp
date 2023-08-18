@@ -3,12 +3,14 @@ import { ActivityIndicator,View, Text, FlatList, TextInput, TouchableOpacity, St
 import {cities} from '../assets/CityNames';
 import { useNavigation } from '@react-navigation/native';
 import { apiKey } from '../ApiKeys/OpenWeatherapi';
+import { useGlobalContext } from '../context/GlobalContext';
 
 
 
 const CitySearch = () => {
   const [searchText, setSearchText] = useState('');
   const [cityData, setCityData] = useState([]);
+  const { setcurrCity } = useGlobalContext();
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -52,7 +54,8 @@ const CitySearch = () => {
         .then(data => {
           const city = data.city.name;
           console.log("City: "+city);
-          navigation.navigate('Home', { city });
+          setcurrCity(city);
+          navigation.navigate('Home');
         })
         .catch(error => {
             console.log('Error!', error);

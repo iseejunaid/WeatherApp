@@ -1,38 +1,25 @@
 import React, { useState,useEffect } from 'react';
-import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View, Modal,FlatList } from 'react-native';
+import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View, Modal,FlatList,SafeAreaView } from 'react-native';
 import BottomComponent from '../Components/BottomComponent'
-import { useNavigation } from '@react-navigation/native';
+import Header from '../Components/Header/Header';
 import { apiKey } from '../ApiKeys/OpenWeatherapi';
 import { Feather,Ionicons,FontAwesome } from '@expo/vector-icons'; 
-import { useRoute } from '@react-navigation/native';
+import { useGlobalContext } from '../context/GlobalContext';
+import citydata, { addCity, removeCity } from '../src/data/citydata';
 
 
 
 export default function Home() {
-  const [citydata,setCityData] = useState([
-    { label: 'Lahore' },
-    { label: 'Islamabad' },
-]); 
 
-  route = useRoute();
-  const searchedCity = route.params?.city;
   const [isLoading, setIsLoading] = useState(true);
-  const [currCity, setcurrCity] = useState('Lahore');
+  const {currCity, temperatureUnit } = useGlobalContext();
   const [modalVisible, setModalVisible] = useState(false);
-  const [temperatureUnit, setTemperatureUnit] = useState('metric');
-  const [countrycode, setcountrycode] = useState('PK');
   const [currtemp, setcurrTemp] = useState('0');
   const [highTemperature, setHighTemperature] = useState('0');
   const [lowTemperature, setLowTemperature] = useState('0');
   const [weatherstate, setweatherState] = useState('Sunny');
   const [weatherPredictions, setWeatherPredictions] = useState([]);
   const [nextday, setnextdays]= useState([]);
-
-  const navigation = useNavigation();
-
-  const goToCitySearch = () => {
-    navigation.navigate('CitySearch');
-  };
 
   const addButtonHandler = () => {
     const isCityAlreadyAdded = citydata.some((city) => city.label === currCity);
@@ -44,12 +31,6 @@ export default function Home() {
     }
   };
   
-
-  useEffect(() => { 
-    console.log("Searched city: "+searchedCity);
-    setcurrCity(searchedCity); 
-  }, [searchedCity]);
-
   const showTemperatureOptions = () => {
     Alert.alert(
       'Select Temperature Unit',
@@ -82,16 +63,6 @@ export default function Home() {
     console.log("Current Temperature Unit: "+temperatureUnit);
   }, [currCity, temperatureUnit]);
 
-  const handleCitySelect = (city) => {
-    setcurrCity(city);
-    setModalVisible(false);
-  };
-  const deleteCity = (index) => {
-    const updatedCityData = citydata.filter((_, i) => i !== index);
-    setCityData(updatedCityData);
-    setModalVisible(false);
-  };
-
   function fetchWeather(cityName) {
     encodedcityname = encodeURIComponent(cityName);
     const apiUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${encodedcityname}&units=${temperatureUnit}&appid=${apiKey}`;
@@ -99,7 +70,6 @@ export default function Home() {
     fetch(apiUrl)
         .then(response => response.json())
         .then(data => {
-            setcountrycode(data.city.country);
             setcurrTemp(Math.ceil(data.list[0].main.temp));
             setHighTemperature(Math.ceil(data.list[0].main.temp_max));
             setLowTemperature(Math.floor(data.list[0].main.temp_min));
@@ -150,46 +120,10 @@ export default function Home() {
     );
   }
   return (
-    <View style={[styles.container,{backgroundColor:getBackgroundColor()}]}>
-      <View style={styles.header}>
-      <View style={styles.header1}>
-      <TouchableOpacity onPress={() => setModalVisible(true)}>
-        <Text style={styles.loctxt}>{currCity}, {countrycode}</Text>  
-      </TouchableOpacity>
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => setModalVisible(false)}>
-        <View style={styles.modalBackground}>
-          <View style={styles.modalforeground}>
-          <FlatList
-            data={citydata}
-            keyExtractor={(item) => item.label}
-            style={{ flexGrow: 0 }}
-            renderItem={({ item,index }) => (
-              <View style={styles.cityItem}>
-                <TouchableOpacity onPress={() => handleCitySelect(item.label)}>
-                  <Text style={styles.modaltxt}>{item.label}</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => deleteCity(index)}>
-                  <FontAwesome name="trash" size={20} color="red" />
-                </TouchableOpacity>
-              </View>
-            )}/>
-          </View>
-        </View>
-      </Modal>
-      </View>
+    <SafeAreaView style={[styles.container,{backgroundColor:getBackgroundColor()}]}>
+    
+    <Header data={citydata}/>
 
-      <TouchableOpacity style={styles.header2} onPress={goToCitySearch}>
-        <FontAwesome style={styles.header2icon} name="search" size={35} color="black" />
-      </TouchableOpacity>
-
-      <TouchableOpacity style={styles.header3} onPress={showTemperatureOptions}>
-        <Ionicons name="ios-settings-outline" size={35} color="black" />
-      </TouchableOpacity>
-      </View>
       
       <View style={styles.degreeView} onStartShouldSetResponder={showTemperatureOptions}>
         <View style={styles.degreesign}></View>
@@ -245,7 +179,7 @@ export default function Home() {
       </View>
 
 
-    </View>
+    </SafeAreaView>
   );  
 }
 
@@ -256,51 +190,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  header: {
-    flex: 0.15,
-    width: '100%',
-    alignItems: 'flex-end',
-    flexDirection: 'row',
-    // backgroundColor:'grey'
-  },
-  header1:{
-    width:'65%',
-    height:'40%',
-    // backgroundColor:'blue'
-  },
-  header2:{
-    height:'40%',
-    width:'15%',
-    // backgroundColor:'yellow'
-  },
-  header2icon:{marginLeft:'40%'},
-  header3:{
-  width:'20%',
-  height:'40%',
-  alignItems:'center',
-  justifyContent:'center',
-  marginBottom:'1.5%',
-  // backgroundColor:'red'
-  },
-  loctxt: {
-    fontSize: 25,
-    fontWeight: 'bold',
-    alignSelf: 'center',
-  },
-  modalBackground: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0, 0, 0, 0.5)' },
-  modalforeground: { width: '60%',  backgroundColor: 'white', borderRadius: 10, padding: 10 },
-  modaltxt: { paddingVertical: 10, fontSize: 18 ,alignSelf:'center'},
-
-  cityItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    borderBottomWidth: 1,
-    borderBottomColor: 'gray',
-  },
-  
   degreeView:{ flexDirection: 'row', alignItems: 'flex-start',left:160},
   degreesign:{
     width: 10,
