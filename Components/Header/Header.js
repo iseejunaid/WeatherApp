@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import HeaderSearch from './HeaderSearch';
-import HeaderSettings from './HeaderSettings';
+import HeaderTempSettings from './HeaderTempSettings';
 import HeaderLocation from './HeaderLocation';
 
 const Header = () => {
@@ -9,7 +9,7 @@ const Header = () => {
     <View style={styles.header}>
       <HeaderLocation/>
       <HeaderSearch />
-      <HeaderSettings />
+      <HeaderTempSettings />
     </View>
   );
 };

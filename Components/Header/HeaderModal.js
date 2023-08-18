@@ -19,14 +19,12 @@ const HeaderModal = ({ modalVisible, setModalVisible, handleCitySelect, deleteCi
               keyExtractor={(item) => item.label}
               style={{ flexGrow: 0 }}
               renderItem={({ item, index }) => (
-                <View style={styles.cityItem}>
-                  <TouchableOpacity onPress={() => handleCitySelect(item.label)}>
+                <TouchableOpacity style={styles.cityItem} onPress={() => handleCitySelect(item.label)}>
                     <Text style={styles.modaltxt}>{item.label}</Text>
-                  </TouchableOpacity>
                   <TouchableOpacity onPress={() => deleteCity(index)}>
-                    <FontAwesome name="trash" size={20} color="red" />
+                    <FontAwesome style={{backgroundColor:'white'}} name="trash" size={20} color="red" />
                   </TouchableOpacity>
-                </View>
+                </TouchableOpacity>
               )}
             />
           </View>
@@ -64,5 +62,4 @@ const styles = StyleSheet.create({
     borderBottomColor: 'gray',
   },
 });
-
 export default HeaderModal;

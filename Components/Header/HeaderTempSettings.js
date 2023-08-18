@@ -3,7 +3,7 @@ import { StyleSheet, TouchableOpacity } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useGlobalContext } from '../../context/GlobalContext';
 
-const HeaderSearch = () => {
+const HeaderTempSettings = () => {
   const { temperatureUnit, setTemperatureUnit } = useGlobalContext();
 
   const toggleTemperatureUnit = () => {
@@ -17,9 +17,9 @@ const HeaderSearch = () => {
   return (
     <TouchableOpacity style={styles.header3} onPress={toggleTemperatureUnit}>
       {temperatureUnit === 'metric' ? (
-        <MaterialCommunityIcons name="temperature-celsius" size={35} color="black" />
+        <MaterialCommunityIcons name="temperature-celsius" size={45} color="black" />
       ) : (
-        <MaterialCommunityIcons name="temperature-fahrenheit" size={35} color="black" />
+        <MaterialCommunityIcons name="temperature-fahrenheit" size={45} color="black" />
       )}
     </TouchableOpacity>
   );
@@ -31,8 +31,8 @@ const styles = StyleSheet.create({
     height: '40%',
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: '1%',
+    marginBottom: '1.6%',
   },
 });
 
-export default HeaderSearch;
+export default HeaderTempSettings;

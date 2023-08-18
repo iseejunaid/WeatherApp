@@ -1,19 +1,17 @@
 import React, { useState,useEffect } from 'react';
-import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View, Modal,FlatList,SafeAreaView } from 'react-native';
+import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View, SafeAreaView } from 'react-native';
 import BottomComponent from '../Components/BottomComponent'
 import Header from '../Components/Header/Header';
-import { apiKey } from '../ApiKeys/OpenWeatherapi';
-import { Feather,Ionicons,FontAwesome } from '@expo/vector-icons'; 
+import { apiKey } from '../ApiKeys/OpenWeatherapi'; 
 import { useGlobalContext } from '../context/GlobalContext';
-import citydata, { addCity, removeCity } from '../src/data/citydata';
-
-
+import citydata from '../src/data/citydata';
+import WeatherIconComponent from '../Components/WeatherIconComponent';
+import {getBackgroundColor } from '../src/getBackground';
 
 export default function Home() {
 
   const [isLoading, setIsLoading] = useState(true);
   const {currCity, temperatureUnit } = useGlobalContext();
-  const [modalVisible, setModalVisible] = useState(false);
   const [currtemp, setcurrTemp] = useState('0');
   const [highTemperature, setHighTemperature] = useState('0');
   const [lowTemperature, setLowTemperature] = useState('0');
@@ -29,32 +27,6 @@ export default function Home() {
     } else {
       Alert.alert('City already Favorite!');
     }
-  };
-  
-  const showTemperatureOptions = () => {
-    Alert.alert(
-      'Select Temperature Unit',
-      '',
-      [
-        {
-          text: 'Celsius',
-          onPress: () => {
-            setTemperatureUnit('metric');
-          }
-        },
-        {
-          text: 'Fahrenheit',
-          onPress: () => {
-            setTemperatureUnit('imperial');
-          }
-        },
-        {
-          text: 'Cancel',
-          style: 'cancel',
-        },
-      ],
-      { cancelable: true }
-    );
   };
 
   useEffect(() => {
@@ -94,23 +66,6 @@ export default function Home() {
             setIsLoading(false);
         });
   }
-  const getBackgroundColor = () => {
-    if (weatherstate === 'Clear') {
-      return '#48AEFF'; 
-    } else if (weatherstate === 'Rain') {
-      return '#3F7CD7';
-    } else if (weatherstate === 'Clouds') {
-      return '#37B8FC';
-    } else if (weatherstate === 'Snow') {
-      return '#37B8FC';
-    } else if (weatherstate === 'Drizzle') {
-      return '#3F7CD7';
-    } else if (weatherstate === 'Thunderstorm') {
-      return '#6840A3'; 
-    } else {
-      return 'blue';
-    }
-  };
 
   if (isLoading) {
     return (
@@ -120,31 +75,11 @@ export default function Home() {
     );
   }
   return (
-    <SafeAreaView style={[styles.container,{backgroundColor:getBackgroundColor()}]}>
-    
-    <Header data={citydata}/>
+    <SafeAreaView style={[styles.container,{ backgroundColor: getBackgroundColor(weatherstate) }]}>
 
-      
-      <View style={styles.degreeView} onStartShouldSetResponder={showTemperatureOptions}>
-        <View style={styles.degreesign}></View>
-        <Text style={{ fontSize: 30 }}>{temperatureUnit === 'metric' ? 'C' : 'F'}</Text>
-      </View>
+      <Header/>
 
-      <View style={styles.icon}>
-        {weatherstate === 'Clear' ? (
-          <Ionicons name="sunny-sharp" size={250} color="#FFCC33" />
-        ) : weatherstate === 'Rain' ? (
-          <Ionicons name="rainy" size={250} color="#E8E8EA" />
-        ) : weatherstate === 'Clouds' ? (
-          <FontAwesome name="cloud" size={250} color="#E8E8EA" />
-        ) : weatherstate === 'Snow' ? (
-          <Ionicons name="snow" size={250} color="#FFFFFF" />
-        ) : weatherstate === 'Drizzle' ? (
-          <Feather name="cloud-drizzle" size={250} color="#FFFFFF" /> 
-        ) : weatherstate === 'Thunderstorm' ? (
-          <Ionicons name="thunderstorm-sharp" size={250} color="#413554" />
-        ) : null}
-      </View>
+      <WeatherIconComponent weatherstate={weatherstate}/>
 
 
       <View style={styles.body}>
@@ -190,29 +125,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  degreeView:{ flexDirection: 'row', alignItems: 'flex-start',left:160},
-  degreesign:{
-    width: 10,
-    overflow: 'hidden',
-    height: 10,
-    borderRadius: 15,
-    borderColor: 'black',
-    borderWidth: 2,
-    transform: [{ rotate: '45deg' }],
-  },
-
-  icon: {
-    flex: 0.4,
-    width: '100%',
-    alignItems:'center',
-    justifyContent:'center',
-    // backgroundColor:'yellow'
-  },
   body: {
     flex: 0.15,
     flexDirection:'row',
     width: '100%',
-    // backgroundColor:'green'
   },
   body1:{ 
     flex: 1,
