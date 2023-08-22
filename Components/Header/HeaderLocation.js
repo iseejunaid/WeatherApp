@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useGlobalContext } from '../../context/GlobalContext';
 import HeaderModal from './HeaderModal';
-import citydata, { removeCity } from '../../src/data/citydata';
+import { removeCity } from '../../src/data/citydata';
 
 const HeaderLocation = () => {
   const [modalVisible, setModalVisible] = useState(false);

@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { ActivityIndicator,View, Text, FlatList, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import {cities} from '../assets/CityNames';
 import { useNavigation } from '@react-navigation/native';
-import { apiKey } from '../ApiKeys/OpenWeatherapi';
 import { useGlobalContext } from '../context/GlobalContext';
+import {fetchCity } from '../Services/api';
 
 
 
@@ -32,11 +32,11 @@ const CitySearch = () => {
         .map(word => word.charAt(0).toUpperCase() + word.slice(1))
         .join(' ');
 
-      fetchCity(capitalizedSearchText);
+      CityCheck(capitalizedSearchText);
     }
   };  
   const selectCity = (city) => {
-    fetchCity(city);
+    CityCheck(city);
   };
 
   const renderCityItem = ({ item }) => (
@@ -45,24 +45,20 @@ const CitySearch = () => {
     </TouchableOpacity>
   );
 
-  function fetchCity(cityName) {
-    encodedcityname = encodeURIComponent(cityName);
-    const apiUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${encodedcityname}&appid=${apiKey}`;
-
-    fetch(apiUrl)
-        .then(response => response.json())
-        .then(data => {
-          const city = data.city.name;
-          console.log("City: "+city);
-          setcurrCity(city);
-          navigation.navigate('Home');
-        })
-        .catch(error => {
-            console.log('Error!', error);
-            Alert.alert("City not found!");
-        });
-  }
-
+  async function CityCheck(cityName) {
+    try {
+      const fetchedcity = await fetchCity(cityName);
+      if (fetchedcity) {
+        console.log("City: " + fetchedcity);
+        setcurrCity(fetchedcity);
+        navigation.navigate('Home');
+      } else {
+        Alert.alert("City not found!");
+      }
+    } catch (error) {
+      console.error("Error in CityCheck:", error);
+    }
+  }  
 
   return (
     <View style={styles.container}>
