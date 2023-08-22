@@ -1,56 +1,55 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { useCurrTempContext } from '../context/CurrTempContext';
+import { useGlobalContext } from '../context/GlobalContext';
 
 const CurrentWeather = () => {
   const { currTemp, weatherState, highTemperature, lowTemperature } = useCurrTempContext();
+  const { isLandscape } = useGlobalContext();
+
+  const temperatureTextSize = isLandscape ? 50 : 74;
+  const weatherStateTextSize = isLandscape ? 24 : 30;
+  const temperatureRangeTextSize = isLandscape ? 20 : 25;
 
   return (
     <View style={styles.container}>
       <View style={styles.temperatureContainer}>
-        <Text style={styles.temperatureText}>{currTemp}°C</Text>
+        <Text style={[styles.temperatureText, { fontSize: temperatureTextSize }]}>
+          {currTemp}°C
+        </Text>
       </View>
       <View style={styles.weatherStateContainer}>
-        <Text style={styles.weatherStateText}>{weatherState}</Text>
+        <Text style={[styles.weatherStateText, { fontSize: weatherStateTextSize }]}>
+          {weatherState}
+        </Text>
       </View>
       <View style={styles.temperatureRangeContainer}>
-        <Text style={styles.temperatureRangeText}>H: {highTemperature}   L: {lowTemperature}</Text>
+        <Text style={[styles.temperatureRangeText, { fontSize: temperatureRangeTextSize }]}>
+          H: {highTemperature}   L: {lowTemperature}
+        </Text>
       </View>
     </View>
   );
 };
-
-export default CurrentWeather;
 
 const styles = StyleSheet.create({
   container: {
     flex: 0.23,
     flexDirection: 'column',
     width: '100%',
-    // backgroundColor:'green'
   },
   temperatureContainer: {
-    flex: 0.5,
     alignItems: 'center', 
     justifyContent: 'center',
   },
   weatherStateContainer: {
-    flex: 0.3,
     justifyContent: 'center',
-    alignItems: 'center', 
+    alignItems: 'center',
   },
   temperatureRangeContainer: {
-    flex: 0.2,
     justifyContent: 'center', 
-    alignItems: 'center', 
-  },
-  temperatureText: {
-    fontSize: 74,
-  },
-  weatherStateText: {
-    fontSize: 30,
-  },
-  temperatureRangeText: {
-    fontSize: 25,
+    alignItems: 'center',
   },
 });
+
+export default CurrentWeather;

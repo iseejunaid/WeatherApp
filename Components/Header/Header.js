@@ -3,11 +3,14 @@ import { StyleSheet, View } from 'react-native';
 import HeaderSearch from './HeaderSearch';
 import HeaderTempSettings from './HeaderTempSettings';
 import HeaderLocation from './HeaderLocation';
+import { useGlobalContext } from '../../context/GlobalContext';
 
 const Header = () => {
+  const { isLandscape } = useGlobalContext();
+
   return (
-    <View style={styles.header}>
-      <HeaderLocation/>
+    <View style={[styles.header, isLandscape && styles.landscapeHeader]}>
+      <HeaderLocation />
       <HeaderSearch />
       <HeaderTempSettings />
     </View>
@@ -20,7 +23,12 @@ const styles = StyleSheet.create({
     width: '100%',
     alignItems: 'flex-end',
     flexDirection: 'row',
-    // backgroundColor: 'red',
+  },
+  landscapeHeader: {
+    height: '30%',
+    width: '100%',
+    flexDirection: 'row',
+    marginTop:'-5%',
   },
 });
 
