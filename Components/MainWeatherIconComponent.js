@@ -4,7 +4,7 @@ import WeatherIcon from './WeatherIcon';
 import { useCurrTempContext } from '../context/CurrTempContext';
 
 const MainWeatherIconComponent = () => {
-  const iconSize = 250;
+  const iconSize = 180;
   const { weatherState } = useCurrTempContext();
   return (
     <View style={styles.icon}>
@@ -15,7 +15,7 @@ const MainWeatherIconComponent = () => {
 
 const styles = {
   icon: {
-    flex: 0.3,
+    flex: 0.2,
     width: '100%',
     alignItems: 'center',
     justifyContent: 'center',

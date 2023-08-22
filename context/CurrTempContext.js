@@ -1,14 +1,14 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { fetchWeather } from '../Services/api';
 import { useGlobalContext } from '../context/GlobalContext';
-
+import LoadingComponent from '../Components/LoadingComponent';
 
 const CurrTempContext = createContext();
 
 export const useCurrTempContext = () => useContext(CurrTempContext);
 
 export const CurrTempProvider = ({ children }) => {
-  const {currCity,temperatureUnit} = useGlobalContext();
+  const { currCity, temperatureUnit } = useGlobalContext();
   const [currTemp, setCurrTemp] = useState(0);
   const [highTemperature, setHighTemperature] = useState(0);
   const [lowTemperature, setLowTemperature] = useState(0);
@@ -18,6 +18,7 @@ export const CurrTempProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    setIsLoading(true);
     fetchWeather(currCity, temperatureUnit)
       .then(data => {
         setCurrTemp(Math.ceil(data.currTemp));
@@ -40,7 +41,7 @@ export const CurrTempProvider = ({ children }) => {
       currCity, temperatureUnit,
       currTemp, highTemperature, lowTemperature, weatherState, weatherPredictions, nextDays, isLoading
     }}>
-      {children}
+      {isLoading ? <LoadingComponent /> : children}
     </CurrTempContext.Provider>
   );
 };

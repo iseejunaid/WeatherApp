@@ -1,6 +1,7 @@
 
 import { apiKey } from '../ApiKeys/OpenWeatherapi';
 import { countryCodeUrl, forecastUrl } from './apiUrls';
+import axios from 'axios';
 
 
 export async function fetchCountryCode(cityName) {
@@ -66,4 +67,27 @@ export const fetchWeather = async (cityName, temperatureUnit) => {
       throw new Error('Error fetching weather data: ' + error.message);
     }
   };
+
+export const fetchHourlyData = async (city,temperatureUnit) => {
+  try {
+    const apiUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${apiKey}&units=${temperatureUnit}`;
   
+    const response = await axios.get(apiUrl);
+    const forecastList = response.data.list;
+    const hourlyData = forecastList.slice(0, 8).map(item => {
+      const dateTime = new Date(item.dt * 1000);
+      const timeString = dateTime.toLocaleTimeString([], { hour: 'numeric', hour12: true });
+      return {
+        time: timeString,
+        weatherState: item.weather[0].main,
+        temperature: item.main.temp
+      };
+    });
+    return hourlyData;
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
+};
+
+

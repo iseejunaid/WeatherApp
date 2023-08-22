@@ -3,18 +3,18 @@ import { View, Text, StyleSheet } from 'react-native';
 import { useCurrTempContext } from '../context/CurrTempContext';
 
 const CurrentWeather = () => {
-  const { temperatureUnit, currTemp, weatherState, highTemperature, lowTemperature } = useCurrTempContext();
+  const { currTemp, weatherState, highTemperature, lowTemperature } = useCurrTempContext();
 
   return (
-    <View style={styles.body}>
-      <View style={styles.body1}>
-        <Text style={{ fontSize: temperatureUnit === 'imperial' ? 74 : 75, fontWeight: 'bold' }}>{currTemp}</Text>
+    <View style={styles.container}>
+      <View style={styles.temperatureContainer}>
+        <Text style={styles.temperatureText}>{currTemp}°C</Text>
       </View>
-      <View style={styles.body2}>
-        <Text style={{ fontSize: 30 }}>{weatherState}</Text>
+      <View style={styles.weatherStateContainer}>
+        <Text style={styles.weatherStateText}>{weatherState}</Text>
       </View>
-      <View style={styles.body3}>
-        <Text style={{ fontSize: temperatureUnit === 'imperial' ? 25 : 30 }}>{highTemperature}/{lowTemperature}</Text>
+      <View style={styles.temperatureRangeContainer}>
+        <Text style={styles.temperatureRangeText}>H: {highTemperature}   L: {lowTemperature}</Text>
       </View>
     </View>
   );
@@ -23,25 +23,33 @@ const CurrentWeather = () => {
 export default CurrentWeather;
 
 const styles = StyleSheet.create({
-  body: {
-    flex: 0.1,
-    flexDirection: 'row',
+  container: {
+    flex: 0.2,
+    flexDirection: 'column',
     width: '100%',
   },
-  body1: {
-    flex: 1,
-    alignItems: 'flex-end',
-    marginRight: '2%',
-    justifyContent: 'flex-end',
+  temperatureContainer: {
+    flex: 0.5,
+    alignItems: 'center', 
+    justifyContent: 'center',
   },
-  body2: {
-    flex: 1.2,
-    justifyContent: 'flex-end',
-    height: '100%',
+  weatherStateContainer: {
+    flex: 0.3,
+    justifyContent: 'center',
+    alignItems: 'center', 
   },
-  body3: {
-    flex: 0.8,
-    justifyContent: 'flex-end',
-    height: '100%',
+  temperatureRangeContainer: {
+    flex: 0.2,
+    justifyContent: 'center', 
+    alignItems: 'center', 
+  },
+  temperatureText: {
+    fontSize: 74,
+  },
+  weatherStateText: {
+    fontSize: 30,
+  },
+  temperatureRangeText: {
+    fontSize: 25,
   },
 });
