@@ -37,11 +37,13 @@ const styles = StyleSheet.create({
   locationContainer: {
     width: '65%',
     height: '40%',
+    // backgroundColor: 'white',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   loctxt: {
     fontSize: 25,
     fontWeight: 'bold',
-    alignSelf: 'center',
   },
 });
 

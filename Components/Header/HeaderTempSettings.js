@@ -17,9 +17,9 @@ const HeaderTempSettings = () => {
   return (
     <TouchableOpacity style={styles.header3} onPress={toggleTemperatureUnit}>
       {temperatureUnit === 'metric' ? (
-        <MaterialCommunityIcons name="temperature-celsius" size={45} color="black" />
+        <MaterialCommunityIcons name="temperature-celsius" size={40} color="black" />
       ) : (
-        <MaterialCommunityIcons name="temperature-fahrenheit" size={45} color="black" />
+        <MaterialCommunityIcons name="temperature-fahrenheit" size={40} color="black" />
       )}
     </TouchableOpacity>
   );
@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
     height: '40%',
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: '1.6%',
+    // backgroundColor: 'white',
   },
 });
 

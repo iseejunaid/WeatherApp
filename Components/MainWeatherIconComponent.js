@@ -19,6 +19,7 @@ const styles = {
     width: '100%',
     alignItems: 'center',
     justifyContent: 'center',
+    // backgroundColor: 'white',
   },
 };
 

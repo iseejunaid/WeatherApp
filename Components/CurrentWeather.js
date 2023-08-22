@@ -24,9 +24,10 @@ export default CurrentWeather;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 0.2,
+    flex: 0.23,
     flexDirection: 'column',
     width: '100%',
+    // backgroundColor:'green'
   },
   temperatureContainer: {
     flex: 0.5,

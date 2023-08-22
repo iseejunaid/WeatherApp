@@ -5,28 +5,26 @@ import { useGlobalContext } from '../context/GlobalContext';
 import WeatherIcons from "./WeatherIcon";
 
 const HourlyPredictionComponent = () => {
-  
   const [hourlyData, setHourlyData] = useState([]);
-  const { temperatureUnit,currCity } = useGlobalContext();
+  const { temperatureUnit, currCity } = useGlobalContext();
 
   useEffect(() => {
-    fetchdata();
-  }, [currCity,temperatureUnit]);
+    fetchData();
+  }, [currCity, temperatureUnit]);
 
-  async function fetchdata(){
-    const data = await fetchHourlyData(currCity,temperatureUnit); 
-    if(data)
-      setHourlyData(data)
-    else
-      Alert.alert("Error!")
+  async function fetchData() {
+    const data = await fetchHourlyData(currCity, temperatureUnit); 
+    if (data) {
+      setHourlyData(data);
+    } else {
+      Alert.alert("Error!");
+    }
   }
-  
-
 
   const renderItem = ({ item }) => (
     <View style={styles.itemContainer}>
-      <WeatherIcons weatherState={item.weatherState} size={50}/>
-      <Text style={styles.temptext}>
+      <WeatherIcons weatherState={item.weatherState} size={50} />
+      <Text style={styles.temperatureText}>
         {Math.ceil(item.temperature)}
         {temperatureUnit === 'metric' ? '°C' : '°F'}
       </Text>
@@ -35,24 +33,28 @@ const HourlyPredictionComponent = () => {
       </Text>
     </View>
   );
-  
 
   return (
-    <View style={{ flex: 0.15, justifyContent: "center", width: "90%" }}>
+    <View style={styles.container}>
       <FlatList
-      data={hourlyData}
-      horizontal
-      showsHorizontalScrollIndicator={false}
-      keyExtractor={(item, index) => `${item.time}_${index}`}
-      renderItem={renderItem}/>
-
+        data={hourlyData}
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        keyExtractor={(item, index) => `${item.time}_${index}`}
+        renderItem={renderItem}
+      />
     </View>
   );
 };
 
-export default HourlyPredictionComponent;
-
 const styles = StyleSheet.create({
+  container: {
+    // backgroundColor:'red',
+    justifyContent: "center",
+    marginTop:'8%',
+    alignSelf:'center',
+    width:'88%'
+  },
   itemContainer: {
     marginRight: 20,
     alignItems: "center",
@@ -61,7 +63,9 @@ const styles = StyleSheet.create({
   timeText: {
     marginTop: 5,
   },
-  temptext:{
-    fontSize:16
-  }
+  temperatureText: {
+    fontSize: 16,
+  },
 });
+
+export default HourlyPredictionComponent;

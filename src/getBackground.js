@@ -12,6 +12,6 @@ export const getBackgroundColor = (weatherstate) => {
     } else if (weatherstate === 'Thunderstorm') {
       return '#6840A3';
     } else {
-      return 'blue';
+      return 'lightgrey';
     }
   };

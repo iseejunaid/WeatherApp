@@ -1,7 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { fetchWeather } from '../Services/api';
 import { useGlobalContext } from '../context/GlobalContext';
-import LoadingComponent from '../Components/LoadingComponent';
 
 const CurrTempContext = createContext();
 
@@ -16,6 +15,8 @@ export const CurrTempProvider = ({ children }) => {
   const [weatherPredictions, setWeatherPredictions] = useState([]);
   const [nextDays, setNextDays] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+
+  const LoadingComponent = require('../Components/LoadingComponent').default;
 
   useEffect(() => {
     setIsLoading(true);

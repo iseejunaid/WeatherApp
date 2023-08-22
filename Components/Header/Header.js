@@ -16,10 +16,11 @@ const Header = () => {
 
 const styles = StyleSheet.create({
   header: {
-    flex: 0.15,
+    height: '12%',
     width: '100%',
     alignItems: 'flex-end',
     flexDirection: 'row',
+    // backgroundColor: 'red',
   },
 });
 
