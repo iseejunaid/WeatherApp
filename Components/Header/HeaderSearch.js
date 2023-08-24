@@ -11,7 +11,7 @@ const HeaderSearch = () => {
 
   return (
     <TouchableOpacity style={styles.header2} onPress={goToCitySearch}>
-      <FontAwesome name="search" size={35} color="black" />
+      <FontAwesome name="search" size={30} color="black" />
     </TouchableOpacity>
   );
 }
@@ -20,6 +20,7 @@ const styles = StyleSheet.create({
   header2: {
     width: '15%',
     alignItems: 'center',
+    justifyContent: 'center',
     height: '40%',
     // backgroundColor: 'white',
   },

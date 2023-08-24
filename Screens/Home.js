@@ -10,6 +10,7 @@ import MainWeatherIconComponent from '../Components/MainWeatherIconComponent';
 import HourlyPredictionComponent from '../Components/HourlyPredictionComponent';
 import LandScapeHome from './LandScapeHome';
 import { useGlobalContext } from '../context/GlobalContext';
+import db from '../db/firebase'
 
 
 export default function Home() {

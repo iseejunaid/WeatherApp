@@ -3,8 +3,9 @@ import { StyleSheet, TouchableOpacity } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useGlobalContext } from '../../context/GlobalContext';
 
+
 const HeaderTempSettings = () => {
-  const { temperatureUnit, setTemperatureUnit } = useGlobalContext();
+  const { temperatureUnit, setTemperatureUnit} = useGlobalContext();
 
   const toggleTemperatureUnit = () => {
     if (temperatureUnit === 'metric') {

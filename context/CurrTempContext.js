@@ -40,7 +40,7 @@ export const CurrTempProvider = ({ children }) => {
   return (
     <CurrTempContext.Provider value={{ 
       currCity, temperatureUnit,
-      currTemp, highTemperature, lowTemperature, weatherState, weatherPredictions, nextDays, isLoading
+      currTemp, highTemperature, lowTemperature, weatherState, weatherPredictions, nextDays,setIsLoading, isLoading
     }}>
       {isLoading ? <LoadingComponent /> : children}
     </CurrTempContext.Provider>

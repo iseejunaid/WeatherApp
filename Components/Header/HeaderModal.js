@@ -1,9 +1,19 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Modal, FlatList, TouchableWithoutFeedback, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
-import citydata from '../../src/data/citydata';
+import { getCities } from '../../src/data/citydata';
 
 const HeaderModal = ({ modalVisible, setModalVisible, handleCitySelect, deleteCity }) => {
+  const [cityData, setCityData] = useState([]);
+
+  useEffect(() => {
+    async function fetchCities() {
+      const cities = await getCities();
+      setCityData(cities);
+    }
+    fetchCities();
+  }, []);
+
   return (
     <Modal
       animationType="slide"
@@ -15,14 +25,14 @@ const HeaderModal = ({ modalVisible, setModalVisible, handleCitySelect, deleteCi
         <View style={styles.modalBackground}>
           <View style={styles.modalForeground}>
             <FlatList
-              data={citydata}
-              keyExtractor={(item) => item.label}
+              data={cityData}
+              keyExtractor={(item) => item}
               style={{ flexGrow: 0 }}
-              renderItem={({ item, index }) => (
-                <TouchableOpacity style={styles.cityItem} onPress={() => handleCitySelect(item.label)}>
-                    <Text style={styles.modaltxt}>{item.label}</Text>
-                  <TouchableOpacity onPress={() => deleteCity(index)}>
-                    <FontAwesome style={{backgroundColor:'white'}} name="trash" size={20} color="red" />
+              renderItem={({ item }) => (
+                <TouchableOpacity style={styles.cityItem} onPress={() => handleCitySelect(item)}>
+                  <Text style={styles.modaltxt}>{item}</Text>
+                  <TouchableOpacity onPress={() => deleteCity(item)}>
+                    <FontAwesome style={{ backgroundColor: 'white' }} name="trash" size={20} color="red" />
                   </TouchableOpacity>
                 </TouchableOpacity>
               )}
@@ -62,4 +72,5 @@ const styles = StyleSheet.create({
     borderBottomColor: 'gray',
   },
 });
+
 export default HeaderModal;
