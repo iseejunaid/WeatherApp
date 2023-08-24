@@ -4,12 +4,14 @@ import { getBackgroundColor } from '../src/getBackground';
 import {addCity} from '../db/firebasefunctions';
 import { useGlobalContext } from '../context/GlobalContext';
 import { useCurrTempContext } from '../context/CurrTempContext';
-
+import { getFontAndColor } from "../assets/fontAndColor";
 
 const AddFavComponent = () => {
 
-  const { currCity} = useGlobalContext();
+  const { currCity,darkMode} = useGlobalContext();
   const { weatherState,setIsLoading } = useCurrTempContext();
+  const {backColor} = getFontAndColor(darkMode);
+
   const addButtonHandler = async () => {
     
       setIsLoading(true);
@@ -23,7 +25,7 @@ const AddFavComponent = () => {
   };
 
   return (
-      <TouchableOpacity style={styles.addButton} onPress={addButtonHandler}>
+      <TouchableOpacity style={[styles.addButton,{backgroundColor:backColor}]} onPress={addButtonHandler}>
           <Text style={[styles.addButtonIcon, { color: getBackgroundColor(weatherState) }]}>+</Text>
       </TouchableOpacity>
   );
@@ -35,7 +37,6 @@ const styles = StyleSheet.create({
         right: 20,
         width: 50,
         height: 50,
-        backgroundColor: 'black',
         borderRadius: 25,
         alignItems: 'center',
         justifyContent: 'center',

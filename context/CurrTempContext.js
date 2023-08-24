@@ -7,7 +7,7 @@ const CurrTempContext = createContext();
 export const useCurrTempContext = () => useContext(CurrTempContext);
 
 export const CurrTempProvider = ({ children }) => {
-  const { currCity, temperatureUnit } = useGlobalContext();
+  const { currCity, temperatureUnit,lon,lat, setIsCurrLocation,isCurrLocation } = useGlobalContext();
   const [currTemp, setCurrTemp] = useState(0);
   const [highTemperature, setHighTemperature] = useState(0);
   const [lowTemperature, setLowTemperature] = useState(0);
@@ -28,7 +28,7 @@ export const CurrTempProvider = ({ children }) => {
         setWeatherState(data.weatherState);
         setWeatherPredictions(data.weatherPredictions);
         setNextDays(data.nextDays);
-
+        CheckCurrLocation(data.lat,data.lon);
         setIsLoading(false);
       })
       .catch(error => {
@@ -36,6 +36,22 @@ export const CurrTempProvider = ({ children }) => {
         setIsLoading(false);
       });
   }, [currCity, temperatureUnit]);
+
+  const CheckCurrLocation = (fetchedlat, fetchedlon) => {
+    const tolerance = 0.1;
+  
+    console.log(fetchedlat, fetchedlon);
+    console.log(lat, lon);
+  
+    if (Math.abs(fetchedlat - lat) < tolerance && Math.abs(fetchedlon - lon) < tolerance) {
+      setIsCurrLocation(true);
+    } else {
+      setIsCurrLocation(false);
+    }
+    console.log(isCurrLocation);
+  };
+  
+
 
   return (
     <CurrTempContext.Provider value={{ 

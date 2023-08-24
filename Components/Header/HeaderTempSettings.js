@@ -2,10 +2,12 @@ import React from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useGlobalContext } from '../../context/GlobalContext';
+import { getFontAndColor } from "../../assets/fontAndColor";
 
 
 const HeaderTempSettings = () => {
-  const { temperatureUnit, setTemperatureUnit} = useGlobalContext();
+  const { temperatureUnit, setTemperatureUnit,darkMode} = useGlobalContext();
+  const {iconColor} = getFontAndColor(darkMode);
 
   const toggleTemperatureUnit = () => {
     if (temperatureUnit === 'metric') {
@@ -16,19 +18,19 @@ const HeaderTempSettings = () => {
   };
 
   return (
-    <TouchableOpacity style={styles.header3} onPress={toggleTemperatureUnit}>
+    <TouchableOpacity style={styles.container} onPress={toggleTemperatureUnit}>
       {temperatureUnit === 'metric' ? (
-        <MaterialCommunityIcons name="temperature-celsius" size={40} color="black" />
+        <MaterialCommunityIcons name="temperature-celsius" size={40} color={iconColor} />
       ) : (
-        <MaterialCommunityIcons name="temperature-fahrenheit" size={40} color="black" />
+        <MaterialCommunityIcons name="temperature-fahrenheit" size={40} color={iconColor} />
       )}
     </TouchableOpacity>
   );
 }
 
 const styles = StyleSheet.create({
-  header3: {
-    width: '20%',
+  container: {
+    width: '15%',
     height: '40%',
     alignItems: 'center',
     justifyContent: 'center',

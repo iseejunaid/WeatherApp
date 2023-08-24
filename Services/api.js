@@ -1,6 +1,6 @@
 
 import { apiKey } from '../ApiKeys/OpenWeatherapi';
-import { countryCodeUrl, forecastUrl } from './apiUrls';
+import { countryCodeUrl, forecastUrl,reverseGeocodingUrl } from './apiUrls';
 import axios from 'axios';
 
 
@@ -39,11 +39,13 @@ export const fetchWeather = async (cityName, temperatureUnit) => {
     try {
       const response = await fetch(apiUrl);
       const data = await response.json();
-  
+
       const currTemp = Math.ceil(data.list[0].main.temp);
       const highTemperature = Math.ceil(data.list[0].main.temp_max);
       const lowTemperature = Math.floor(data.list[0].main.temp_min);
       const weatherState = data.list[0].weather[0].main;
+      const lat = data.city.coord.lat;
+      const lon = data.city.coord.lon;
   
       const weatherPredictions = data.list.slice(1, 6);
   
@@ -62,6 +64,8 @@ export const fetchWeather = async (cityName, temperatureUnit) => {
         weatherState,
         weatherPredictions,
         nextDays,
+        lat,
+        lon
       };
     } catch (error) {
       throw new Error('Error fetching weather data: ' + error.message);
@@ -87,6 +91,19 @@ export const fetchHourlyData = async (city,temperatureUnit) => {
   } catch (error) {
     console.error(error);
     return [];
+  }
+};
+
+export const fetchCityName = async (latitude, longitude) => {
+  const apiUrl = `${reverseGeocodingUrl}?lat=${latitude}&lon=${longitude}&appid=${apiKey}`;
+
+  try {
+    const response = await fetch(apiUrl);
+    const data = await response.json();
+    const locationName = data[0].name;
+    return locationName;
+  } catch (error) {
+    return null;
   }
 };
 

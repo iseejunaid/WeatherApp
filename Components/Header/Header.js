@@ -1,22 +1,39 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View,TouchableOpacity } from 'react-native';
 import HeaderSearch from './HeaderSearch';
 import HeaderTempSettings from './HeaderTempSettings';
 import HeaderLocation from './HeaderLocation';
 import { useGlobalContext } from '../../context/GlobalContext';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { saveDarkModePreference } from '../../src/darkMode';
+import { getFontAndColor } from '../../assets/fontAndColor';
 
-const Header = () => {
-  const { isLandscape } = useGlobalContext();
+
+const Header = ({ isLandscape }) => {
+  const { setDarkMode,darkMode } = useGlobalContext();
+  const {iconColor} = getFontAndColor(darkMode);
+
+  const toggleDarkMode = () => {
+      const newMode = !darkMode;
+      setDarkMode(newMode);
+      saveDarkModePreference(newMode);
+  };
+
 
   return (
     <View style={[styles.header, isLandscape && styles.landscapeHeader]}>
+    
+    <TouchableOpacity style={styles.icon} onPress={toggleDarkMode}>
+      <MaterialCommunityIcons name="theme-light-dark" size={35} color= {iconColor} />
+      </TouchableOpacity>
+
+
       <HeaderLocation />
       <HeaderSearch />
       <HeaderTempSettings />
     </View>
   );
 };
-
 const styles = StyleSheet.create({
   header: {
     height: '12%',
@@ -30,6 +47,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     marginTop:'-5%',
   },
+  icon:{
+    // backgroundColor:"grey",
+    height:'40%',
+    width:'12%',
+    justifyContent:'center',
+    alignItems:'center',
+  }
 });
 
 export default Header;

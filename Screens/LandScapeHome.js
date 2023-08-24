@@ -8,24 +8,26 @@ import MainWeatherIconComponent from '../Components/MainWeatherIconComponent';
 import HourlyPredictionComponent from '../Components/HourlyPredictionComponent';
 import PredictionWrapperComponent from '../Components/PredictionWrapperComponent';
 import AddFavComponent from '../Components/AddFavComponent';
+import GetLocation from '../Components/GetLocation';
 
-export default function LandScapeHome() {
+export default function LandScapeHome({ isLandscape }) {
   const { weatherState } = useCurrTempContext();
 
   return (
     <SafeAreaView
       style={[styles.container, { backgroundColor: getBackgroundColor(weatherState) }]}>
-      <Header />
+      <Header  isLandscape={isLandscape}/>
       <View style={styles.contentContainer}>
         <View style={styles.leftContent}>
-          <MainWeatherIconComponent />
-          <CurrentWeather />
+        <MainWeatherIconComponent isLandscape={isLandscape} />
+        <CurrentWeather isLandscape={isLandscape}/>
         </View>
         <ScrollView style={styles.rightContent}>
           <HourlyPredictionComponent />
           <PredictionWrapperComponent />
         </ScrollView>
       </View>
+      <GetLocation />
       <AddFavComponent />
     </SafeAreaView>
   );

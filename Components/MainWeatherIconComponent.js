@@ -2,11 +2,9 @@ import React from 'react';
 import { View } from 'react-native';
 import WeatherIcon from './WeatherIcon';
 import { useCurrTempContext } from '../context/CurrTempContext';
-import { useGlobalContext } from '../context/GlobalContext';
 
-const MainWeatherIconComponent = () => {
+const MainWeatherIconComponent = ({isLandscape}) => {
   const { weatherState } = useCurrTempContext();
-  const { isLandscape } = useGlobalContext();
   const iconSize = isLandscape ? 122 : 180;
 
   return (

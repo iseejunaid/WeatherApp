@@ -2,9 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { Modal, FlatList, TouchableWithoutFeedback, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import { getCities } from '../../src/data/citydata';
+import { getFontAndColor } from '../../assets/fontAndColor';
+import { useGlobalContext } from '../../context/GlobalContext';
 
 const HeaderModal = ({ modalVisible, setModalVisible, handleCitySelect, deleteCity }) => {
+  const { darkMode } = useGlobalContext();
   const [cityData, setCityData] = useState([]);
+  const { fontColor, backColor } = getFontAndColor(darkMode);
 
   useEffect(() => {
     async function fetchCities() {
@@ -23,16 +27,16 @@ const HeaderModal = ({ modalVisible, setModalVisible, handleCitySelect, deleteCi
     >
       <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
         <View style={styles.modalBackground}>
-          <View style={styles.modalForeground}>
+          <View style={[styles.modalForeground,{backgroundColor:backColor}]}>
             <FlatList
               data={cityData}
               keyExtractor={(item) => item}
               style={{ flexGrow: 0 }}
               renderItem={({ item }) => (
                 <TouchableOpacity style={styles.cityItem} onPress={() => handleCitySelect(item)}>
-                  <Text style={styles.modaltxt}>{item}</Text>
+                  <Text style={[styles.modaltxt,{color:fontColor}]}>{item}</Text>
                   <TouchableOpacity onPress={() => deleteCity(item)}>
-                    <FontAwesome style={{ backgroundColor: 'white' }} name="trash" size={20} color="red" />
+                    <FontAwesome style={{ backgroundColor: backColor }} name="trash" size={20} color="red" />
                   </TouchableOpacity>
                 </TouchableOpacity>
               )}
@@ -53,9 +57,9 @@ const styles = StyleSheet.create({
   },
   modalForeground: {
     width: '60%',
-    backgroundColor: 'white',
     borderRadius: 10,
     padding: 10,
+    borderRadius: 20,
   },
   modaltxt: {
     paddingVertical: 10,

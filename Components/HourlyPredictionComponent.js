@@ -2,11 +2,13 @@ import React, { useEffect, useState } from "react";
 import { View, FlatList, StyleSheet, Text, Alert } from "react-native";
 import { fetchHourlyData } from "../Services/api";
 import { useGlobalContext } from '../context/GlobalContext';
+import { getFontAndColor } from "../assets/fontAndColor";
 import WeatherIcons from "./WeatherIcon";
 
 const HourlyPredictionComponent = () => {
   const [hourlyData, setHourlyData] = useState([]);
-  const { temperatureUnit, currCity } = useGlobalContext();
+  const { temperatureUnit, currCity,darkMode } = useGlobalContext();
+  const {fontColor} = getFontAndColor(darkMode);
 
   useEffect(() => {
     fetchData();
@@ -24,11 +26,11 @@ const HourlyPredictionComponent = () => {
   const renderItem = ({ item }) => (
     <View style={styles.itemContainer}>
       <WeatherIcons weatherState={item.weatherState} size={50} />
-      <Text style={styles.temperatureText}>
+      <Text style={[styles.temperatureText,{color:fontColor}]}>
         {Math.ceil(item.temperature)}
         {temperatureUnit === 'metric' ? '°C' : '°F'}
       </Text>
-      <Text style={styles.timeText}>
+      <Text style={[styles.timeText,{color:fontColor}]}>
         {item.time}
       </Text>
     </View>

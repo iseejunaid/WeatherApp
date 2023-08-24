@@ -35,7 +35,5 @@ export const getCities = async () => {
       console.error('Error reading city data from AsyncStorage:', error);
     }
   }
-
-  console.log('getCities() returning:', citydata);
   return citydata;
 };
