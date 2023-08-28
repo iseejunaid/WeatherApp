@@ -25,16 +25,20 @@ const CitySearch = () => {
     setCityData(filtered);
   };
   const handleSearchButtonPress = () => {
-    if (searchText) {
+    if (searchText.trim() !== '') {
       const capitalizedSearchText = searchText
         .toLowerCase()
         .split(' ')
         .map(word => word.charAt(0).toUpperCase() + word.slice(1))
         .join(' ');
-
+  
       CityCheck(capitalizedSearchText);
+    } else {
+      Alert.alert("Please enter a city name!");
+      setSearchText('');
     }
   };  
+
   const selectCity = (city) => {
     CityCheck(city);
   };
