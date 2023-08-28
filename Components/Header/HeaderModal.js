@@ -1,22 +1,17 @@
-import React, { useEffect, useState } from 'react';
 import { Modal, FlatList, TouchableWithoutFeedback, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
-import { getCities } from '../../src/data/citydata';
 import { getFontAndColor } from '../../assets/fontAndColor';
 import { useGlobalContext } from '../../context/GlobalContext';
 
-const HeaderModal = ({ modalVisible, setModalVisible, handleCitySelect, deleteCity }) => {
-  const { darkMode } = useGlobalContext();
-  const [cityData, setCityData] = useState([]);
+const HeaderModal = ({ modalVisible, setModalVisible, deleteCity,cityData }) => {
+  const { darkMode,setcurrCity } = useGlobalContext();
   const { fontColor, backColor } = getFontAndColor(darkMode);
 
-  useEffect(() => {
-    async function fetchCities() {
-      const cities = await getCities();
-      setCityData(cities);
-    }
-    fetchCities();
-  }, []);
+  const handleCitySelect = (city) => {
+    setcurrCity(city);
+    setModalVisible(false);
+  };
+  
 
   return (
     <Modal
