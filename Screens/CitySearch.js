@@ -4,14 +4,20 @@ import {cities} from '../assets/CityNames';
 import { useNavigation } from '@react-navigation/native';
 import { useGlobalContext } from '../context/GlobalContext';
 import {fetchCity } from '../Services/api';
+import GetLocation from '../Components/GetLocation';
+import { getFontAndColor } from '../assets/fontAndColor';
+import { getBackgroundColor } from '../src/getBackground';
+import { useCurrTempContext } from '../context/CurrTempContext';
 
 
 
 const CitySearch = () => {
   const [searchText, setSearchText] = useState('');
   const [cityData, setCityData] = useState([]);
-  const { setcurrCity } = useGlobalContext();
+  const { setcurrCity, setCountryCode, darkMode} = useGlobalContext();
+  const {weatherState} = useCurrTempContext();
   const navigation = useNavigation();
+  const { fontColor,backColor } = getFontAndColor(darkMode);
 
   useEffect(() => {
     setCityData(cities);
@@ -44,24 +50,28 @@ const CitySearch = () => {
   };
 
   const renderCityItem = ({ item }) => (
-    <TouchableOpacity style={styles.cityItem} onPress={() => selectCity(item)}>
-      <Text>{item}</Text>
+    <TouchableOpacity style={[styles.cityItem,{borderColor:fontColor}]} onPress={() => selectCity(item)}>
+      <Text style={{color:fontColor}}>{item}</Text>
     </TouchableOpacity>
   );
 
   async function CityCheck(cityName) {
-    try {
-      const fetchedcity = await fetchCity(cityName);
+    fetchCity(cityName)
+    .then(data => {
+      let fetchedcity = data.city
+      let fetchedcountry = data.country
       if (fetchedcity) {
         console.log("City: " + fetchedcity);
         setcurrCity(fetchedcity);
+        setCountryCode(fetchedcountry);
         navigation.navigate('Home');
       } else {
         Alert.alert("City not found!");
-      }
-    } catch (error) {
-      console.error("Error in CityCheck:", error);
-    }
+      }     
+    })
+    .catch(error => {
+      Alert.alert("City not found!");
+    });
   }  
 
   return (
@@ -72,19 +82,20 @@ const CitySearch = () => {
         value={searchText}
         onChangeText={handleSearch}
       />
-      <TouchableOpacity style={styles.searchButton} onPress={handleSearchButtonPress}>
+      <TouchableOpacity style={[styles.searchButton,{backgroundColor:getBackgroundColor(weatherState)}]} onPress={handleSearchButtonPress}>
         <Text>Search</Text>
       </TouchableOpacity>
       {cityData.length === 0 ? (
         <ActivityIndicator size="large" color="blue" />
       ) : (
-        <FlatList
+        <FlatList style={{backgroundColor:backColor,borderRadius:8}}
           data={cityData}
           renderItem={renderCityItem}
           keyExtractor={(item) => item}
           contentContainerStyle={styles.cityList}
         />
       )}
+      <GetLocation />
     </View>
   );
 };
@@ -109,10 +120,9 @@ const styles = StyleSheet.create({
     padding: 12,
     alignSelf: 'stretch',
     borderBottomWidth: 1,
-    borderColor: 'black',
   },
   searchButton: {
-    backgroundColor: 'blue',
+    // backgroundColor: 'blue',
     padding: 10,
     borderRadius: 8,
     alignItems: 'center',

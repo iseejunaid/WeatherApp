@@ -7,7 +7,7 @@ const CurrTempContext = createContext();
 export const useCurrTempContext = () => useContext(CurrTempContext);
 
 export const CurrTempProvider = ({ children }) => {
-  const { currCity, temperatureUnit,lon,lat, setIsCurrLocation,isCurrLocation } = useGlobalContext();
+  const { currCity, temperatureUnit,lon,lat, setIsCurrLocation,isCurrLocation, setCountryCode } = useGlobalContext();
   const [currTemp, setCurrTemp] = useState(0);
   const [highTemperature, setHighTemperature] = useState(0);
   const [lowTemperature, setLowTemperature] = useState(0);
@@ -15,6 +15,7 @@ export const CurrTempProvider = ({ children }) => {
   const [weatherPredictions, setWeatherPredictions] = useState([]);
   const [nextDays, setNextDays] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [details, setDetails] = useState([{}]);
 
   const LoadingComponent = require('../Components/LoadingComponent').default;
 
@@ -28,7 +29,9 @@ export const CurrTempProvider = ({ children }) => {
         setWeatherState(data.weatherState);
         setWeatherPredictions(data.weatherPredictions);
         setNextDays(data.nextDays);
+        setCountryCode(data.country);
         CheckCurrLocation(data.lat,data.lon);
+        setDetails(data.details);
         setIsLoading(false);
       })
       .catch(error => {
@@ -56,7 +59,7 @@ export const CurrTempProvider = ({ children }) => {
   return (
     <CurrTempContext.Provider value={{ 
       currCity, temperatureUnit,
-      currTemp, highTemperature, lowTemperature, weatherState, weatherPredictions, nextDays,setIsLoading, isLoading
+      currTemp, highTemperature, lowTemperature, weatherState, weatherPredictions, nextDays,setIsLoading, isLoading, details
     }}>
       {isLoading ? <LoadingComponent /> : children}
     </CurrTempContext.Provider>

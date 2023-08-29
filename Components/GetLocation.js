@@ -7,11 +7,13 @@ import { getFontAndColor } from '../assets/fontAndColor';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { fetchCityName } from '../Services/api';
 import * as Location from 'expo-location';
+import { useNavigation } from '@react-navigation/native';
 
 const GetLocation = () => {
   const { darkMode,setcurrCity,setLat,setLon } = useGlobalContext();
   const { weatherState} = useCurrTempContext();
-  const { backColor } = getFontAndColor(darkMode);
+  const { fontColor } = getFontAndColor(darkMode);
+  const navigation = useNavigation();
   const [location, setLocation] = useState(null);
 
   useEffect(() => {
@@ -43,6 +45,7 @@ const GetLocation = () => {
         latitude: currentLocation.coords.latitude,
         longitude: currentLocation.coords.longitude,
       });
+      navigation.navigate('Home');
     } catch (error) {
       console.error('Error fetching location:', error);
     }
@@ -50,7 +53,7 @@ const GetLocation = () => {
 
   return (
     <TouchableOpacity
-      style={[styles.addButton, { backgroundColor: backColor }]}
+      style={[styles.addButton, { backgroundColor: fontColor }]}
       onPress={locationButtonHandler}
     >
       <MaterialIcons
@@ -65,7 +68,7 @@ const GetLocation = () => {
 const styles = StyleSheet.create({
   addButton: {
     position: 'absolute',
-    bottom: 80,
+    bottom: 20,
     right: 20,
     width: 50,
     height: 50,

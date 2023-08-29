@@ -22,7 +22,7 @@ const styles = {
     justifyContent: 'center',
   },
   landscapeIcon: {
-    flex: 0.4,
+    flex: 0.79,
     width: '100%',
     alignItems: 'center',
     justifyContent: 'center',

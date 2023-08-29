@@ -9,6 +9,8 @@ import HourlyPredictionComponent from '../Components/HourlyPredictionComponent';
 import PredictionWrapperComponent from '../Components/PredictionWrapperComponent';
 import AddFavComponent from '../Components/AddFavComponent';
 import GetLocation from '../Components/GetLocation';
+import CurrentDetailsComponent from '../Components/CurrentDetailsComponent';
+import SunPositionComponent from '../Components/SunPositonComponent';
 
 export default function LandScapeHome({ isLandscape }) {
   const { weatherState } = useCurrTempContext();
@@ -25,9 +27,11 @@ export default function LandScapeHome({ isLandscape }) {
         <ScrollView style={styles.rightContent}>
           <HourlyPredictionComponent />
           <PredictionWrapperComponent />
+          <CurrentDetailsComponent/>
+        <SunPositionComponent isLandscape={isLandscape}/>
         </ScrollView>
       </View>
-      <GetLocation />
+      <GetLocation/>
       <AddFavComponent />
     </SafeAreaView>
   );

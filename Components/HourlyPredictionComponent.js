@@ -4,10 +4,13 @@ import { fetchHourlyData } from "../Services/api";
 import { useGlobalContext } from '../context/GlobalContext';
 import { getFontAndColor } from "../assets/fontAndColor";
 import WeatherIcons from "./WeatherIcon";
+import { getBackgroundColor } from "../src/getBackground";
+import { useCurrTempContext } from "../context/CurrTempContext";
 
 const HourlyPredictionComponent = () => {
   const [hourlyData, setHourlyData] = useState([]);
   const { temperatureUnit, currCity,darkMode } = useGlobalContext();
+  const {weatherState} = useCurrTempContext()
   const {fontColor} = getFontAndColor(darkMode);
 
   useEffect(() => {
@@ -24,7 +27,7 @@ const HourlyPredictionComponent = () => {
   }
 
   const renderItem = ({ item }) => (
-    <View style={styles.itemContainer}>
+    <View style={[styles.itemContainer,{backgroundColor:getBackgroundColor(weatherState)}]}>
       <WeatherIcons weatherState={item.weatherState} size={50} />
       <Text style={[styles.temperatureText,{color:fontColor}]}>
         {Math.ceil(item.temperature)}
@@ -52,13 +55,19 @@ const HourlyPredictionComponent = () => {
 const styles = StyleSheet.create({
   container: {
     // backgroundColor:'red',
-    justifyContent: "center",
-    marginTop:'8%',
+    marginTop:'5%',
     alignSelf:'center',
-    width:'88%'
+    width:'95%'
   },
   itemContainer: {
-    marginRight: 20,
+    backgroundColor:'blue',
+    padding:8,
+    elevation:10,
+    marginLeft:5,
+    marginRight:5,
+    marginTop: 1,
+    marginBottom:8,
+    borderRadius:15,
     alignItems: "center",
     justifyContent: "center",
   },

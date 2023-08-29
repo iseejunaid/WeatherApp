@@ -8,8 +8,10 @@ import PredictionWrapperComponent from '../Components/PredictionWrapperComponent
 import AddFavComponent from '../Components/AddFavComponent';
 import MainWeatherIconComponent from '../Components/MainWeatherIconComponent';
 import HourlyPredictionComponent from '../Components/HourlyPredictionComponent';
-import GetLocation from '../Components/GetLocation';
 import LandScapeHome from './LandScapeHome';
+import CurrentDetailsComponent from '../Components/CurrentDetailsComponent';
+import SunPositionComponent from '../Components/SunPositonComponent';
+
 
 
 
@@ -18,18 +20,18 @@ export default function Home() {
   const [isLandscape,setIsLandscape] = useState(false);
   
 
-  useEffect(() => {
-    setIsLandscape(Dimensions.get('window').width > Dimensions.get('window').height);
-    const updateLayout = () => {
-      setIsLandscape(Dimensions.get('window').width > Dimensions.get('window').height);
-    };
+  // useEffect(() => {
+  //   setIsLandscape(Dimensions.get('window').width > Dimensions.get('window').height);
+  //   const updateLayout = () => {
+  //     setIsLandscape(Dimensions.get('window').width > Dimensions.get('window').height);
+  //   };
 
-    Dimensions.addEventListener('change', updateLayout);
+  //   Dimensions.addEventListener('change', updateLayout);
 
-    return () => {
-      Dimensions.removeEventListener('change', updateLayout);
-    };
-  }, []);
+  //   return () => {
+  //     Dimensions.removeEventListener('change', updateLayout);
+  //   };
+  // }, []);
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: getBackgroundColor(weatherState)}]}>
@@ -40,14 +42,17 @@ export default function Home() {
       ) : (
         <View style={styles.container}>
         <Header  isLandscape={isLandscape}/>
-        <ScrollView style={styles.scrollStyle}>
+        <ScrollView style={styles.scrollStyle} stickyHeaderIndices={isLandscape ? [] : [1]}>
           <MainWeatherIconComponent isLandscape={isLandscape} />
-          <CurrentWeather isLandscape={isLandscape}/>
+          <View style={[styles.stickyHeader,{backgroundColor:getBackgroundColor(weatherState)}]}>
+          <CurrentWeather isLandscape={isLandscape} />
+            </View>
           <HourlyPredictionComponent/>
           <PredictionWrapperComponent/>
+          <CurrentDetailsComponent/>
+          <SunPositionComponent/>
         </ScrollView>
         <AddFavComponent />
-        <GetLocation />
         </View>
       )}
     </SafeAreaView>
@@ -65,5 +70,11 @@ const styles = StyleSheet.create({
   },
   scrollStyle: {
     flex: 1,
+  },
+  stickyHeader: {
+    position: 'sticky',
+    top: 0,
+    zIndex: 0,
+    // backgroundColor: 'black',
   },
 });

@@ -4,28 +4,29 @@ import WeatherIcon from './WeatherIcon';
 import { useCurrTempContext } from '../context/CurrTempContext';
 import { useGlobalContext } from '../context/GlobalContext';
 import { getFontAndColor } from '../assets/fontAndColor';
+import { getBackgroundColor } from '../src/getBackground';
 
 const PredictionComponent = ({ weatherval, nextdayval }) => {
-  const {darkMode} = useGlobalContext();
-  const { weatherPredictions, nextDays } = useCurrTempContext();
-  const {fontColor} = getFontAndColor(darkMode);
+  const { darkMode } = useGlobalContext();
+  const { weatherPredictions, nextDays, weatherState} = useCurrTempContext();
+  const { fontColor } = getFontAndColor(darkMode);
 
   const iconSize = 50;
-  const weatherState = weatherPredictions[weatherval]?.weather[0]?.main;
-  const iconComponent = <WeatherIcon weatherState={weatherState} size={iconSize} />;
+  const weatherstate = weatherPredictions[weatherval]?.weather[0]?.main;
+  const iconComponent = <WeatherIcon weatherState={weatherstate} size={iconSize} />;
 
   if (!weatherPredictions || weatherPredictions.length === 0) {
     return null;
   }
 
   return (
-    <View style={styles.bottomcol}>
-      <View style={styles.bottomcol1}>{iconComponent}</View>
-      <View style={styles.bottomcol2}>
-        <Text style={{ fontSize: 25 ,color:fontColor}}>{nextDays[nextdayval]}</Text>
+    <View style={[styles.container,{backgroundColor:getBackgroundColor(weatherState)}]}>
+      <View style={styles.iconContainer}>{iconComponent}</View>
+      <View style={styles.dayContainer}>
+        <Text style={{ fontSize: 22, color: fontColor }}>{nextDays[nextdayval]}</Text>
       </View>
-      <View style={styles.bottomcol3}>
-        <Text style={{ fontSize: 24, color:fontColor }}>
+      <View style={styles.tempContainer}>
+        <Text style={{ fontSize: 24, color: fontColor }}>
           {Math.ceil(weatherPredictions[weatherval]?.main.temp_max)}/
           {Math.floor(weatherPredictions[weatherval]?.main.temp_min)}
         </Text>
@@ -37,8 +38,29 @@ const PredictionComponent = ({ weatherval, nextdayval }) => {
 export default PredictionComponent;
 
 const styles = StyleSheet.create({
-  bottomcol: { flex: 1, flexDirection: 'row' },
-  bottomcol1: { flex: 0.3, alignItems: 'center', justifyContent: 'center', marginBottom: '2.1%' },
-  bottomcol2: { flex: 0.4, alignItems: 'flex-start', justifyContent: 'center' },
-  bottomcol3: { flex: 0.3, alignItems: 'center', justifyContent: 'center', marginRight: '2%' },
+  container: {
+    flex: 1,
+    flexDirection: 'row',
+    // borderWidth:1,
+    borderRadius:15,
+    elevation:10,
+    width: '95%',
+    marginBottom:'2%'
+  },
+  iconContainer: {
+    flex: 0.3,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  dayContainer: {
+    flex: 0.4,
+    alignItems: 'flex-start',
+    justifyContent: 'center',
+  },
+  tempContainer: {
+    flex: 0.3,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: '2%',
+  },
 });
