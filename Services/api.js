@@ -118,3 +118,48 @@ const ConvertToHourseAndMinutes = (timestamp) => {
 }
 
 
+export const fetchFavWeather = async (cityData, temperatureUnit) => {
+  const cityDetailsPromises = cityData.map(async city => {
+    const encodedCityName = encodeURIComponent(city);
+    const apiUrl = `${forecastUrl}?q=${encodedCityName}&units=${temperatureUnit}&appid=${apiKey}`;
+
+    try {
+      const response = await fetch(apiUrl);
+      if (!response.ok) {
+        console.error('API request failed:', response.status);
+        return null;
+      }
+      const data = await response.json();
+
+      const localTime = convertUtcToLocalTime(data.city.timezone, data.list[0].dt);
+
+      return {
+        cityname: data.city.name,
+        time: localTime,
+        temperature: Math.ceil(data.list[0].main.temp),
+        weatherState: data.list[0].weather[0].main,
+        highTemperature: Math.ceil(data.list[0].main.temp_max),
+        lowTemperature: Math.floor(data.list[0].main.temp_min),
+      };
+    } catch (error) {
+      console.error('Error fetching weather data:', error.message);
+      return null;
+    }
+  });
+
+  const cityDetails = await Promise.all(cityDetailsPromises);
+  return cityDetails.filter(details => details !== null);
+};
+
+function convertUtcToLocalTime(utcTimestamp, timezoneOffset) {
+  const utcDate = new Date(utcTimestamp * 1000);
+  const localDate = new Date(utcDate.getTime() + timezoneOffset * 1000);
+
+  const options = {
+    hour: 'numeric',
+    minute: 'numeric',
+    hour12: true,
+  };
+
+  return localDate.toLocaleTimeString(undefined, options);
+}

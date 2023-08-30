@@ -60,9 +60,10 @@ const HeaderLocation = () => {
 
 const styles = StyleSheet.create({
   locationContainer: {
-    width: '60%',
-    height: '40%',
+    width: '100%',
+    height: '50%',
     justifyContent: 'center',
+    // backgroundColor:'red'
   },
   loctxt: {
     fontSize: 20,

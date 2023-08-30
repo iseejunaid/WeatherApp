@@ -1,35 +1,39 @@
 import React, { useState, useEffect } from 'react';
-import { ActivityIndicator,View, Text, FlatList, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
-import {cities} from '../assets/CityNames';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useGlobalContext } from '../context/GlobalContext';
-import {fetchCity } from '../Services/api';
+import { fetchCity } from '../Services/api';
 import GetLocation from '../Components/GetLocation';
 import { getFontAndColor } from '../assets/fontAndColor';
 import { getBackgroundColor } from '../src/getBackground';
+import { cities } from '../assets/CityNames';
+import CitySearchList from '../Components/CitySearchList';
 import { useCurrTempContext } from '../context/CurrTempContext';
-
-
+import FavWidgets from '../Components/FavWidgets';
+import { ScrollView } from 'react-native-gesture-handler';
 
 const CitySearch = () => {
   const [searchText, setSearchText] = useState('');
+  
+  const { setcurrCity, setCountryCode, darkMode } = useGlobalContext();
   const [cityData, setCityData] = useState([]);
-  const { setcurrCity, setCountryCode, darkMode} = useGlobalContext();
-  const {weatherState} = useCurrTempContext();
+  const { weatherState } = useCurrTempContext();
   const navigation = useNavigation();
-  const { fontColor,backColor } = getFontAndColor(darkMode);
+  const { fontColor, backColor } = getFontAndColor(darkMode);
 
   useEffect(() => {
     setCityData(cities);
   }, []);
 
   const handleSearch = (text) => {
+
     const filtered = cities.filter((city) =>
       city.toLowerCase().includes(text.toLowerCase())
     );
     setSearchText(text);
     setCityData(filtered);
   };
+
   const handleSearchButtonPress = () => {
     if (searchText.trim() !== '') {
       const capitalizedSearchText = searchText
@@ -37,66 +41,61 @@ const CitySearch = () => {
         .split(' ')
         .map(word => word.charAt(0).toUpperCase() + word.slice(1))
         .join(' ');
-  
+
       CityCheck(capitalizedSearchText);
     } else {
       Alert.alert("Please enter a city name!");
       setSearchText('');
     }
-  };  
-
-  const selectCity = (city) => {
-    CityCheck(city);
   };
-
-  const renderCityItem = ({ item }) => (
-    <TouchableOpacity style={[styles.cityItem,{borderColor:fontColor}]} onPress={() => selectCity(item)}>
-      <Text style={{color:fontColor}}>{item}</Text>
-    </TouchableOpacity>
-  );
 
   async function CityCheck(cityName) {
     fetchCity(cityName)
-    .then(data => {
-      let fetchedcity = data.city
-      let fetchedcountry = data.country
-      if (fetchedcity) {
-        console.log("City: " + fetchedcity);
-        setcurrCity(fetchedcity);
-        setCountryCode(fetchedcountry);
-        navigation.navigate('Home');
-      } else {
-        Alert.alert("City not found!");
-      }     
-    })
-    .catch(error => {
-      Alert.alert("City not found!");
-    });
-  }  
+      .then(data => {
+        let fetchedcity = data.city
+        let fetchedcountry = data.country
+        if (fetchedcity) {
+          console.log("City: " + fetchedcity);
+          setcurrCity(fetchedcity);
+          setCountryCode(fetchedcountry);
+          navigation.navigate('Home');
+        } else {
+          Alert.alert("City not found!");
+        }
+      })
+      .catch(error => {
+        Alert.alert("City not found! ",error);
+      });
+  }
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container,{backgroundColor:backColor}]}>
+    <View style={styles.searchBarContainer}>
       <TextInput
-        style={styles.searchBar}
+        style={[{ width: searchText.length > 0 ? '82%' : '100%',color:fontColor }]}
         placeholder="Search cities..."
+        placeholderTextColor={fontColor}
         value={searchText}
         onChangeText={handleSearch}
       />
-      <TouchableOpacity style={[styles.searchButton,{backgroundColor:getBackgroundColor(weatherState)}]} onPress={handleSearchButtonPress}>
-        <Text>Search</Text>
-      </TouchableOpacity>
-      {cityData.length === 0 ? (
-        <ActivityIndicator size="large" color="blue" />
-      ) : (
-        <FlatList style={{backgroundColor:backColor,borderRadius:8}}
-          data={cityData}
-          renderItem={renderCityItem}
-          keyExtractor={(item) => item}
-          contentContainerStyle={styles.cityList}
-        />
+      {searchText.length > 0 && (
+        <TouchableOpacity style={styles.searchButton}
+          onPress={handleSearchButtonPress}>
+          <Text style={{ color: getBackgroundColor(weatherState) }}>Search</Text>
+        </TouchableOpacity>
       )}
-      <GetLocation />
     </View>
+    {searchText.length > 0 && (
+      <CitySearchList backColor = {backColor} cityData = {cityData} fontColor={fontColor} CityCheck={CityCheck}/>
+    )}
+    <GetLocation />
+    <View style={{marginTop:'4%',height:"93%"}}>
+    <Text style={{fontSize:25,fontWeight:'bold',color:fontColor}}>Favorites</Text>
+    <ScrollView>
+    <FavWidgets fontColor={fontColor} backColor={backColor}/>
+    </ScrollView>
+    </View>
+  </View>
   );
 };
 
@@ -105,29 +104,30 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 16,
   },
-  searchBar: {
-    height: 40,
-    borderWidth: 1,
-    borderColor: 'gray',
+  searchBarContainer: {
+    flexDirection: 'row',
     borderRadius: 8,
-    paddingHorizontal: 12,
-    marginBottom: 16,
-  },
-  cityList: {
-    flexGrow: 1,
-  },
-  cityItem: {
-    padding: 12,
-    alignSelf: 'stretch',
-    borderBottomWidth: 1,
+    borderWidth:1,
+    borderColor: 'gray',
+    height: 45,
+    paddingHorizontal: 7,
+    // backgroundColor: 'red',
   },
   searchButton: {
-    // backgroundColor: 'blue',
-    padding: 10,
-    borderRadius: 8,
+    width: '20%',
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 10,
+  },
+  cityListContainer: {
+    position: 'absolute',
+    top: 65, 
+    left: 16,
+    right: 16,
+    bottom: 16,
+    backgroundColor: 'white',
+    borderRadius: 8,
+    elevation: 4, 
+    zIndex: 1,
   },
 });
 

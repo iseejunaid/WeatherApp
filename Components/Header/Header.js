@@ -3,6 +3,7 @@ import { StyleSheet, View,TouchableOpacity } from 'react-native';
 import HeaderSearch from './HeaderSearch';
 import HeaderTempSettings from './HeaderTempSettings';
 import HeaderLocation from './HeaderLocation';
+import HeaderSettings from './HeaderSettings'
 import { useGlobalContext } from '../../context/GlobalContext';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { saveDarkModePreference } from '../../src/darkMode';
@@ -22,15 +23,21 @@ const Header = ({ isLandscape }) => {
 
   return (
     <View style={[styles.header, isLandscape && styles.landscapeHeader]}>
-    
-    <TouchableOpacity style={styles.icon} onPress={toggleDarkMode}>
+      <View style={styles.leftHeader}>
+        <HeaderLocation />
+      </View>
+      <View style={styles.rightHeader}>
+        <HeaderSettings/>
+      </View>
+    {/* <TouchableOpacity style={styles.icon} onPress={toggleDarkMode}>
       <MaterialCommunityIcons name="theme-light-dark" size={35} color= {iconColor} />
-      </TouchableOpacity>
+      </TouchableOpacity> */}
 
 
-      <HeaderLocation />
-      <HeaderSearch />
-      <HeaderTempSettings />
+      
+      
+      {/* <HeaderSearch /> */}
+      {/* <HeaderTempSettings /> */}
     </View>
   );
 };
@@ -38,7 +45,6 @@ const styles = StyleSheet.create({
   header: {
     height: '12%',
     width: '100%',
-    alignItems: 'flex-end',
     flexDirection: 'row',
   },
   landscapeHeader: {
@@ -53,6 +59,21 @@ const styles = StyleSheet.create({
     width:'12%',
     justifyContent:'center',
     alignItems:'center',
+  },
+  leftHeader:{
+    height:'100%',
+    width:'80%',
+    // backgroundColor:'white',
+    justifyContent:'flex-end',
+    paddingLeft:'2%'
+  },
+  rightHeader:{
+    height:'100%',
+    width:'20%',
+    justifyContent:'flex-end',
+    alignItems:'flex-end',
+    paddingRight:'2%',
+    // backgroundColor:'black'
   }
 });
 
