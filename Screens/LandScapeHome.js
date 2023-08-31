@@ -31,7 +31,6 @@ export default function LandScapeHome({ isLandscape }) {
         <SunPositionComponent isLandscape={isLandscape}/>
         </ScrollView>
       </View>
-      <GetLocation/>
       <AddFavComponent />
     </SafeAreaView>
   );

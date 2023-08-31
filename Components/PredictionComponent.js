@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     // borderWidth:1,
     borderRadius:15,
-    elevation:10,
+    elevation:2,
     width: '95%',
     marginBottom:'2%'
   },

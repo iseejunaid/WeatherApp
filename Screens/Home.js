@@ -20,18 +20,18 @@ export default function Home() {
   const [isLandscape,setIsLandscape] = useState(false);
   
 
-  // useEffect(() => {
-  //   setIsLandscape(Dimensions.get('window').width > Dimensions.get('window').height);
-  //   const updateLayout = () => {
-  //     setIsLandscape(Dimensions.get('window').width > Dimensions.get('window').height);
-  //   };
+  useEffect(() => {
+    setIsLandscape(Dimensions.get('window').width > Dimensions.get('window').height);
+    const updateLayout = () => {
+      setIsLandscape(Dimensions.get('window').width > Dimensions.get('window').height);
+    };
 
-  //   Dimensions.addEventListener('change', updateLayout);
+    Dimensions.addEventListener('change', updateLayout);
 
-  //   return () => {
-  //     Dimensions.removeEventListener('change', updateLayout);
-  //   };
-  // }, []);
+    return () => {
+      Dimensions.removeEventListener('change', updateLayout);
+    };
+  }, []);
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: getBackgroundColor(weatherState)}]}>

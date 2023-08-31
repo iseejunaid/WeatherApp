@@ -1,74 +1,116 @@
 import { Modal, FlatList, TouchableWithoutFeedback, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { FontAwesome } from '@expo/vector-icons';
 import { getFontAndColor } from '../../assets/fontAndColor';
 import { useGlobalContext } from '../../context/GlobalContext';
+import { useState,useEffect } from 'react';
+import { useNavigation } from '@react-navigation/native';
+import { saveDarkModePreference } from '../../src/darkMode';
 
-const HeaderModal = ({ modalVisible, setModalVisible, deleteCity,cityData }) => {
-  const { darkMode,setcurrCity } = useGlobalContext();
+const HeaderModal = ({ modalVisible, setModalVisible}) => {
+  const { darkMode,temperatureUnit, setTemperatureUnit,setDarkMode} = useGlobalContext();
   const { fontColor, backColor } = getFontAndColor(darkMode);
+  const [unit,setUnit] = useState('');
+  const navigation = useNavigation();
 
-  const handleCitySelect = (city) => {
-    setcurrCity(city);
+
+  useEffect(() => {
+    if (temperatureUnit === 'metric') {
+      setUnit('C');
+    } else {
+      setUnit('F');
+    }
+  }, [temperatureUnit]);
+
+  
+  const handleOptionPress = (id) => {
+    switch (id) {
+      case '1':
+        handleFavoritesOption();
+        break;
+      case '2':
+        handleUnitOption();
+        break;
+      case '3':
+        handleModeOption();
+        break;
+      default:
+        break;
+    }
     setModalVisible(false);
   };
-  
+
+  const handleFavoritesOption = () => {
+    navigation.navigate("CitySearch");
+  };
+
+  const handleUnitOption = () => {
+    if (temperatureUnit === 'metric') {
+      setTemperatureUnit('imperial');
+    } else {
+      setTemperatureUnit('metric');
+    }
+  };
+
+  const handleModeOption = () => {
+    const newMode = !darkMode;
+    setDarkMode(newMode);
+    saveDarkModePreference(newMode);
+  };
+
+  const options = [
+    { id: '1', label: 'Favorites' },
+    { id: '2', label: 'Unit (\u00B0' + unit + ')' },
+    { id: '3', label: 'Switch Mode (Light)' },
+  ];
 
   return (
     <Modal
-      animationType="slide"
-      transparent={true}
-      visible={modalVisible}
-      onRequestClose={() => setModalVisible(false)}
-    >
-      <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
-        <View style={styles.modalBackground}>
-          <View style={[styles.modalForeground,{backgroundColor:backColor}]}>
-            <FlatList
-              data={cityData}
-              keyExtractor={(item) => item}
-              style={{ flexGrow: 0 }}
-              renderItem={({ item }) => (
-                <TouchableOpacity style={styles.cityItem} onPress={() => handleCitySelect(item)}>
-                  <Text style={[styles.modaltxt,{color:fontColor}]}>{item}</Text>
-                  <TouchableOpacity onPress={() => deleteCity(item)}>
-                    <FontAwesome style={{ backgroundColor: backColor }} name="trash" size={20} color="red" />
-                  </TouchableOpacity>
-                </TouchableOpacity>
-              )}
-            />
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalContainer}>
+              <View style={[styles.modalContent,{backgroundColor:backColor}]}>
+                <FlatList
+                  data={options}
+                  keyExtractor={(item) => item.id}
+                  renderItem={({ item }) => (
+                    <TouchableOpacity
+                      style={styles.optionItem}
+                      onPress={() => handleOptionPress(item.id)}
+                    >
+                      <Text style={{color:fontColor}}>{item.label}</Text>
+                    </TouchableOpacity>
+                  )}
+                />
+              </View>
+            </View>
           </View>
-        </View>
-      </TouchableWithoutFeedback>
-    </Modal>
+        </TouchableWithoutFeedback>
+      </Modal>
   );
 };
 
 const styles = StyleSheet.create({
-  modalBackground: {
+  modalOverlay: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
-  modalForeground: {
-    width: '60%',
-    borderRadius: 10,
-    padding: 10,
-    borderRadius: 20,
+  modalContainer: {
+    position: 'absolute',
+    top: 40,
+    right: 10,
   },
-  modaltxt: {
+  modalContent: {
+    borderRadius: 8,
+    padding: 16,
+  },
+  optionItem: {
     paddingVertical: 10,
-    fontSize: 18,
-    alignSelf: 'center',
-  },
-  cityItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 10,
-    paddingVertical: 5,
     borderBottomWidth: 1,
-    borderBottomColor: 'gray',
+    borderBottomColor: 'lightgray',
   },
 });
 

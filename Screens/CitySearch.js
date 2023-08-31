@@ -85,10 +85,10 @@ const CitySearch = () => {
         </TouchableOpacity>
       )}
     </View>
+    <GetLocation/>
     {searchText.length > 0 && (
       <CitySearchList backColor = {backColor} cityData = {cityData} fontColor={fontColor} CityCheck={CityCheck}/>
     )}
-    <GetLocation />
     <View style={{marginTop:'4%',height:"93%"}}>
     <Text style={{fontSize:25,fontWeight:'bold',color:fontColor}}>Favorites</Text>
     <ScrollView>

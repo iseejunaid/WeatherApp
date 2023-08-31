@@ -1,18 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { TouchableOpacity, StyleSheet } from 'react-native';
-import { getBackgroundColor } from '../src/getBackground';
+import { TouchableOpacity, StyleSheet,Text, View } from 'react-native';
+import { FontAwesome5 } from '@expo/vector-icons';
 import { useGlobalContext } from '../context/GlobalContext';
-import { useCurrTempContext } from '../context/CurrTempContext';
 import { getFontAndColor } from '../assets/fontAndColor';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { fetchCityName } from '../Services/api';
 import * as Location from 'expo-location';
 import { useNavigation } from '@react-navigation/native';
 
 const GetLocation = () => {
   const { darkMode,setcurrCity,setLat,setLon } = useGlobalContext();
-  const { weatherState} = useCurrTempContext();
-  const { fontColor } = getFontAndColor(darkMode);
+  const { fontColor,backColor,iconColor } = getFontAndColor(darkMode);
   const navigation = useNavigation();
   const [location, setLocation] = useState(null);
 
@@ -56,28 +53,23 @@ const GetLocation = () => {
       style={[styles.addButton, { backgroundColor: fontColor }]}
       onPress={locationButtonHandler}
     >
-      <MaterialIcons
-        name="my-location"
-        size={24}
-        color={getBackgroundColor(weatherState)}
-      />
+      <Text style={{ color: backColor,fontSize:15 }}>Get Location</Text>
+      <View style={{width:'5%',alignItems:'center'}}>
+        <FontAwesome5 name="map-pin" size={18} color={iconColor} />
+      </View>
     </TouchableOpacity>
   );
 };
 
 const styles = StyleSheet.create({
   addButton: {
-    position: 'absolute',
-    bottom: 20,
-    right: 20,
-    width: 50,
-    height: 50,
-    borderRadius: 25,
+    marginTop: 10,
+    height: 40,
+    width: '100%',
+    borderRadius: 10,
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  addButtonIcon: {
-    fontSize: 30,
+    flexDirection: 'row',
   },
 });
 

@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
   itemContainer: {
     backgroundColor:'blue',
     padding:8,
-    elevation:10,
+    elevation:5,
     marginLeft:5,
     marginRight:5,
     marginTop: 1,
