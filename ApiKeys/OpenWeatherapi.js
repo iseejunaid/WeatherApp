@@ -1,1 +1,1 @@
-export const apiKey = '3bc5206360b55de483c480901ddee29b';
+export const apiKey = 'weatherapikey';
