@@ -1,6 +1,5 @@
 import React, {useEffect, useState } from 'react';
 import { StyleSheet, Dimensions, ScrollView, View, RefreshControl } from 'react-native';
-
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Header from '../Components/Header/Header';
 import { useCurrTempContext } from '../context/CurrTempContext';
@@ -87,9 +86,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   stickyHeader: {
-    width: '80%',
+    width: '100%',
     alignSelf: 'center',
     borderRadius: 25,
-    elevation: 1,
   },
 });

@@ -41,7 +41,7 @@ const WeatherDetailWidget = ({ iconName, value, unit, label, fontColor}) => {
 
 const styles = StyleSheet.create({
     details: {
-        elevation: 10,
+        elevation: 3,
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',

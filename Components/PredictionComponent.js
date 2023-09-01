@@ -42,8 +42,6 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     // borderWidth:1,
-    borderRadius:15,
-    elevation:2,
     width: '95%',
     marginBottom:'2%'
   },

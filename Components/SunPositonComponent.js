@@ -31,7 +31,8 @@ const SunPositionComponent = ({ isLandscape }) => {
     calculateSunAngle();
     const interval = setInterval(calculateSunAngle, 60000);
     return () => clearInterval(interval);
-  }, [sunriseTime, sunsetTime]);
+  }, [sunriseHour, sunsetHour]);
+  
 
   const boxWidth = isLandscape ? Dimensions.get('window').width / 2 * 0.9 : Dimensions.get('window').width * 0.9;
 
@@ -76,7 +77,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     position: 'relative',
     borderRadius: 20,
-    elevation: 20,
+    elevation: 5,
     padding:"2%"
   },
   trajectory: {
