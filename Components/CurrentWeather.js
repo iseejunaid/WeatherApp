@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { useCurrTempContext } from '../context/CurrTempContext';
 import { useGlobalContext } from '../context/GlobalContext';
-import { getFontAndColor } from '../assets/fontAndColor';
+import { getFontAndColor } from '../helpers/fontAndColor';
 
 
 const CurrentWeather = ({ isLandscape }) => {
@@ -45,6 +45,7 @@ const styles = StyleSheet.create({
   temperatureContainer: {
     alignItems: 'center',
     justifyContent: 'center',
+    // backgroundColor:'red'
   },
   weatherStateContainer: {
     justifyContent: 'center',

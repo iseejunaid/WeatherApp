@@ -1,8 +1,10 @@
 import React, {useEffect, useState } from 'react';
-import { StyleSheet, SafeAreaView, Dimensions, ScrollView,View } from 'react-native';
+import { StyleSheet, Dimensions, ScrollView, View, RefreshControl } from 'react-native';
+
+import { SafeAreaView } from 'react-native-safe-area-context';
 import Header from '../Components/Header/Header';
 import { useCurrTempContext } from '../context/CurrTempContext';
-import { getBackgroundColor } from '../src/getBackground';
+import { getBackgroundColor } from '../helpers/getBackground';
 import CurrentWeather from '../Components/CurrentWeather';
 import PredictionWrapperComponent from '../Components/PredictionWrapperComponent';
 import AddFavComponent from '../Components/AddFavComponent';
@@ -11,13 +13,16 @@ import HourlyPredictionComponent from '../Components/HourlyPredictionComponent';
 import LandScapeHome from './LandScapeHome';
 import CurrentDetailsComponent from '../Components/CurrentDetailsComponent';
 import SunPositionComponent from '../Components/SunPositonComponent';
+import { useGlobalContext } from '../context/GlobalContext';
 
 
 
 
 export default function Home() {
+  const{currCity,setcurrCity} = useGlobalContext();
   const { weatherState } = useCurrTempContext();
   const [isLandscape,setIsLandscape] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
   
 
   useEffect(() => {
@@ -33,6 +38,13 @@ export default function Home() {
     };
   }, []);
 
+  const onRefresh = () => {
+    setRefreshing(true);
+    setcurrCity(currCity);
+    setRefreshing(false);
+  };
+
+
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: getBackgroundColor(weatherState)}]}>
       {isLandscape ? (
@@ -42,7 +54,10 @@ export default function Home() {
       ) : (
         <View style={styles.container}>
         <Header  isLandscape={isLandscape}/>
-        <ScrollView style={styles.scrollStyle} stickyHeaderIndices={isLandscape ? [] : [1]}>
+        <ScrollView style={styles.scrollStyle} 
+          stickyHeaderIndices={isLandscape ? [] : [1]}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>}>
           <MainWeatherIconComponent isLandscape={isLandscape} />
           <View style={[styles.stickyHeader,{backgroundColor:getBackgroundColor(weatherState)}]}>
           <CurrentWeather isLandscape={isLandscape} />
@@ -72,9 +87,9 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   stickyHeader: {
-    position: 'sticky',
-    top: 0,
-    zIndex: 0,
-    // backgroundColor: 'black',
+    width: '80%',
+    alignSelf: 'center',
+    borderRadius: 25,
+    elevation: 1,
   },
 });

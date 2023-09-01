@@ -1,5 +1,5 @@
 import React from 'react';
-import {getBackgroundColor } from '../src/getBackground';
+import {getBackgroundColor } from '../helpers/getBackground';
 import { View, ActivityIndicator, StyleSheet } from 'react-native';
 import { useCurrTempContext } from '../context/CurrTempContext';
 

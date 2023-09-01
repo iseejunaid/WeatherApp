@@ -2,7 +2,7 @@ import React, { useEffect} from 'react';
 import { View, Text,  StyleSheet } from 'react-native';
 import { useGlobalContext } from '../../context/GlobalContext';
 import { Ionicons } from '@expo/vector-icons';
-import { getFontAndColor } from '../../assets/fontAndColor';
+import { getFontAndColor } from '../../helpers/fontAndColor';
 
 const HeaderLocation = () => {
   const { currCity, countrycode, darkMode, isCurrLocation } = useGlobalContext();

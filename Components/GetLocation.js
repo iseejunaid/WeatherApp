@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { TouchableOpacity, StyleSheet,Text, View } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { useGlobalContext } from '../context/GlobalContext';
-import { getFontAndColor } from '../assets/fontAndColor';
-import { fetchCityName } from '../Services/api';
+import { getFontAndColor } from '../helpers/fontAndColor';
+import { fetchCityName } from '../helpers/api';
 import * as Location from 'expo-location';
 import { useNavigation } from '@react-navigation/native';
 

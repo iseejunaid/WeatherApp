@@ -23,12 +23,13 @@ const styles = StyleSheet.create({
     height: '12%',
     width: '100%',
     flexDirection: 'row',
+    marginTop:'-15%'
   },
   landscapeHeader: {
     height: '30%',
     width: '100%',
     flexDirection: 'row',
-    marginTop:'-5%',
+    marginTop:'-8%',
   },
   leftHeader:{
     height:'100%',

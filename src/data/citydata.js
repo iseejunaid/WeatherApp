@@ -1,5 +1,5 @@
 import { firebase } from '../../db/firebase';
-import { mutableData } from '../../db/firebasefunctions';
+import { mutableData } from '../../helpers/firebasefunctions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const CITY_DATA_KEY = 'cityData';

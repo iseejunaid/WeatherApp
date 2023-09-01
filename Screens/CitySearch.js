@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useGlobalContext } from '../context/GlobalContext';
-import { fetchCity } from '../Services/api';
+import { fetchCity } from '../helpers/api';
 import GetLocation from '../Components/GetLocation';
-import { getFontAndColor } from '../assets/fontAndColor';
-import { getBackgroundColor } from '../src/getBackground';
+import { getFontAndColor } from '../helpers/fontAndColor';
+import { getBackgroundColor } from '../helpers/getBackground';
 import { cities } from '../assets/CityNames';
 import CitySearchList from '../Components/CitySearchList';
 import { useCurrTempContext } from '../context/CurrTempContext';
@@ -71,13 +71,14 @@ const CitySearch = () => {
   return (
     <View style={[styles.container,{backgroundColor:backColor}]}>
     <View style={styles.searchBarContainer}>
-      <TextInput
-        style={[{ width: searchText.length > 0 ? '82%' : '100%',color:fontColor }]}
-        placeholder="Search cities..."
-        placeholderTextColor={fontColor}
-        value={searchText}
-        onChangeText={handleSearch}
-      />
+    <TextInput
+      style={[{ width: searchText.length > 0 ? '82%' : '100%',color:fontColor }]}
+      placeholder="Search cities..."
+      placeholderTextColor={fontColor}
+      value={searchText}
+      onChangeText={handleSearch}
+      onSubmitEditing={handleSearchButtonPress}/>
+
       {searchText.length > 0 && (
         <TouchableOpacity style={styles.searchButton}
           onPress={handleSearchButtonPress}>
@@ -89,7 +90,7 @@ const CitySearch = () => {
     {searchText.length > 0 && (
       <CitySearchList backColor = {backColor} cityData = {cityData} fontColor={fontColor} CityCheck={CityCheck}/>
     )}
-    <View style={{marginTop:'4%',height:"93%"}}>
+    <View style={{marginTop:'4%',height:"85%"}}>
     <Text style={{fontSize:25,fontWeight:'bold',color:fontColor}}>Favorites</Text>
     <ScrollView>
     <FavWidgets fontColor={fontColor} backColor={backColor}/>
@@ -117,17 +118,6 @@ const styles = StyleSheet.create({
     width: '20%',
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  cityListContainer: {
-    position: 'absolute',
-    top: 65, 
-    left: 16,
-    right: 16,
-    bottom: 16,
-    backgroundColor: 'white',
-    borderRadius: 8,
-    elevation: 4, 
-    zIndex: 1,
   },
 });
 

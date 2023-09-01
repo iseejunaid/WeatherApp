@@ -3,8 +3,8 @@ import { View, StyleSheet, Text } from 'react-native';
 import WeatherIcon from './WeatherIcon';
 import { useCurrTempContext } from '../context/CurrTempContext';
 import { useGlobalContext } from '../context/GlobalContext';
-import { getFontAndColor } from '../assets/fontAndColor';
-import { getBackgroundColor } from '../src/getBackground';
+import { getFontAndColor } from '../helpers/fontAndColor';
+import { getBackgroundColor } from '../helpers/getBackground';
 
 const PredictionComponent = ({ weatherval, nextdayval }) => {
   const { darkMode } = useGlobalContext();

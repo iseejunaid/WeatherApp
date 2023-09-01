@@ -1,10 +1,9 @@
 import React, { useState,useEffect} from 'react';
-import { TouchableOpacity, Text, StyleSheet, Alert } from 'react-native';
-import { getBackgroundColor } from '../src/getBackground';
-import {addCity} from '../db/firebasefunctions';
+import { TouchableOpacity, StyleSheet } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import {addCity,removeCity} from '../helpers/firebasefunctions';
 import { useGlobalContext } from '../context/GlobalContext';
-import { useCurrTempContext } from '../context/CurrTempContext';
-import { getFontAndColor } from "../assets/fontAndColor";
+import { getFontAndColor } from "../helpers/fontAndColor";
 import { getCities } from '../src/data/citydata';
 
 const AddFavComponent = () => {
@@ -13,7 +12,6 @@ const AddFavComponent = () => {
   const [cityData,setCityData] = useState([]);
 
   const { currCity,darkMode} = useGlobalContext();
-  const { weatherState,setIsLoading } = useCurrTempContext();
   const {backColor,fontColor} = getFontAndColor(darkMode);
 
   useEffect(() => {
@@ -34,31 +32,31 @@ const AddFavComponent = () => {
   },[cityData])
 
 
-  const addButtonHandler = async () => {
-    
-      setIsLoading(true);
-    const isAdded = await addCity(currCity);
-    setIsLoading(false);
-      if (isAdded) {
-          Alert.alert('Favorite added: ' + currCity);
-      } else {
-          Alert.alert('City already a Favorite!');
-      }
+  const toggleFav = async () => {
+    if(isfav){
+      setIsFav(false)
+      await removeCity(currCity);
+    }
+    else{
+      setIsFav(true)
+      await addCity(currCity);
+    }
   };
 
   return (
-    <>
-      {!isfav && (
-        <TouchableOpacity
+    <TouchableOpacity
           style={[styles.addButton, { backgroundColor: backColor, borderColor: fontColor }]}
-          onPress={addButtonHandler}
+          onPress={toggleFav}
         >
-          <Text style={[styles.addButtonIcon, { color: getBackgroundColor(weatherState) }]}>+</Text>
-        </TouchableOpacity>
+      {isfav ? (
+          <Ionicons name="md-heart-sharp" size={35} color="red" />
+      ) : (
+          <Ionicons name="md-heart-outline" size={35} color="red" />
       )}
-    </>
+      </TouchableOpacity>
   );
 };
+
 const styles = StyleSheet.create({
     addButton: {
         position: 'absolute',

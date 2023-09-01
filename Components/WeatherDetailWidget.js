@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { FontAwesome, SimpleLineIcons, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import {useCurrTempContext} from '../context/CurrTempContext';
-import { getBackgroundColor } from '../src/getBackground';
+import { getBackgroundColor } from '../helpers/getBackground';
 
 
 const WeatherDetailWidget = ({ iconName, value, unit, label, fontColor}) => {

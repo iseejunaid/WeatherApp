@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { fetchWeather } from '../Services/api';
+import { fetchWeather } from '../helpers/api';
 import { useGlobalContext } from '../context/GlobalContext';
 
 const CurrTempContext = createContext();

@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Dimensions } from 'react-native';
 import { useGlobalContext } from '../context/GlobalContext';
 import { useCurrTempContext } from '../context/CurrTempContext';
-import { getFontAndColor } from '../assets/fontAndColor';
-import { getBackgroundColor } from '../src/getBackground';
+import { getFontAndColor } from '../helpers/fontAndColor';
+import { getBackgroundColor } from '../helpers/getBackground';
 
 const SunPositionComponent = ({ isLandscape }) => {
   const { darkMode } = useGlobalContext();

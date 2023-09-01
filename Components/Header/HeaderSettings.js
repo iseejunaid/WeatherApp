@@ -1,7 +1,7 @@
 import React, { useState} from 'react';
 import { StyleSheet, TouchableOpacity, View} from 'react-native';
 import { useGlobalContext } from '../../context/GlobalContext';
-import { getFontAndColor } from "../../assets/fontAndColor";
+import { getFontAndColor } from "../../helpers/fontAndColor";
 import { Entypo } from '@expo/vector-icons';
 import HeaderModal from './HeaderModal';
 

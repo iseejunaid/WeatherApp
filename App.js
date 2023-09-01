@@ -5,6 +5,7 @@ import { GlobalProvider } from './context/GlobalContext';
 import { CurrTempProvider } from './context/CurrTempContext';
 import Home from './Screens/Home';
 import CitySearch from './Screens/CitySearch';
+import { StatusBar } from 'expo-status-bar';
 
 
 const Stack = createStackNavigator();
@@ -14,6 +15,7 @@ function App() {
     <GlobalProvider>
     <CurrTempProvider>
     <NavigationContainer>
+    <StatusBar barStyle="dark"/>
       <Stack.Navigator initialRouteName="Home">
         <Stack.Screen name="CitySearch" component={CitySearch} />
         <Stack.Screen name="Home" component={Home} options={{headerShown:false}} />

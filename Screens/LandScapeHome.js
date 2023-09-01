@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, SafeAreaView, ScrollView, View } from 'react-native';
 import Header from '../Components/Header/Header';
 import { useCurrTempContext } from '../context/CurrTempContext';
-import { getBackgroundColor } from '../src/getBackground';
+import { getBackgroundColor } from '../helpers/getBackground';
 import CurrentWeather from '../Components/CurrentWeather';
 import MainWeatherIconComponent from '../Components/MainWeatherIconComponent';
 import HourlyPredictionComponent from '../Components/HourlyPredictionComponent';

@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { View, FlatList, StyleSheet, Text, Alert } from "react-native";
-import { fetchHourlyData } from "../Services/api";
+import { fetchHourlyData } from "../helpers/api";
 import { useGlobalContext } from '../context/GlobalContext';
-import { getFontAndColor } from "../assets/fontAndColor";
+import { getFontAndColor } from "../helpers/fontAndColor";
 import WeatherIcons from "./WeatherIcon";
-import { getBackgroundColor } from "../src/getBackground";
+import { getBackgroundColor } from "../helpers/getBackground";
 import { useCurrTempContext } from "../context/CurrTempContext";
 
 const HourlyPredictionComponent = () => {

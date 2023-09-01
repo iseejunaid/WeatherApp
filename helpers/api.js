@@ -1,6 +1,6 @@
 
 import { apiKey } from '../ApiKeys/OpenWeatherapi';
-import {forecastUrl,reverseGeocodingUrl } from './apiUrls';
+import {forecastUrl,reverseGeocodingUrl } from '../Services/apiUrls';
 import axios from 'axios';
 
 export const fetchCity = async (cityName) => {

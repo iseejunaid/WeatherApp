@@ -2,7 +2,7 @@ import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { useGlobalContext } from '../context/GlobalContext';
 import { useCurrTempContext } from '../context/CurrTempContext';
-import { getFontAndColor } from '../assets/fontAndColor';
+import { getFontAndColor } from '../helpers/fontAndColor';
 import WeatherDetailWidget from './WeatherDetailWidget';
 
 const detailWidgets = [

@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, FlatList, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { fetchCity } from '../Services/api';
+import { fetchCity } from '../helpers/api';
 
 const CitySearchList = ({ backColor, cityData, fontColor, CityCheck }) => {
   const selectCity = (city) => {
@@ -43,6 +43,7 @@ const CitySearchList = ({ backColor, cityData, fontColor, CityCheck }) => {
 const styles = StyleSheet.create({
   cityListContainer: {
     flexGrow: 1,
+    // backgroundColor:'red'
   },
   cityList: {
     flexGrow: 1,

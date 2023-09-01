@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { loadDarkModePreference } from '../src/darkMode';
+import { loadDarkModePreference } from '../helpers/darkMode';
 
 const GlobalContext = createContext();
 

@@ -1,9 +1,9 @@
 import { Modal, FlatList, TouchableWithoutFeedback, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { getFontAndColor } from '../../assets/fontAndColor';
+import { getFontAndColor } from '../../helpers/fontAndColor';
 import { useGlobalContext } from '../../context/GlobalContext';
 import { useState,useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
-import { saveDarkModePreference } from '../../src/darkMode';
+import { saveDarkModePreference } from '../../helpers/darkMode';
 
 const HeaderModal = ({ modalVisible, setModalVisible}) => {
   const { darkMode,temperatureUnit, setTemperatureUnit,setDarkMode} = useGlobalContext();
@@ -56,10 +56,11 @@ const HeaderModal = ({ modalVisible, setModalVisible}) => {
     saveDarkModePreference(newMode);
   };
 
+  const mode = darkMode ? 'Dark' : 'Light';
   const options = [
     { id: '1', label: 'Favorites' },
     { id: '2', label: 'Unit (\u00B0' + unit + ')' },
-    { id: '3', label: 'Switch Mode (Light)' },
+    { id: '3', label: 'Switch Mode ('+mode+')' },
   ];
 
   return (

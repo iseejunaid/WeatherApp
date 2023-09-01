@@ -1,19 +1,21 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Animated,Alert } from 'react-native';
+import { View, Text, StyleSheet, Animated, TouchableWithoutFeedback} from 'react-native';
 import { getCities } from '../src/data/citydata';
 import { useGlobalContext } from '../context/GlobalContext';
-import { fetchFavWeather } from '../Services/api';
-import { getBackgroundColor } from "../src/getBackground";
+import { fetchFavWeather } from '../helpers/api';
+import { getBackgroundColor } from "../helpers/getBackground";
 import { RectButton, Swipeable } from 'react-native-gesture-handler';
-import { removeCity } from '../db/firebasefunctions';
+import { removeCity } from '../helpers/firebasefunctions';
+import { useNavigation } from '@react-navigation/native';
 import { useCurrTempContext } from '../context/CurrTempContext';
 
 
 const FavWidget = ({fontColor}) => {
   const [cityData, setCityData] = useState([]);
-  const { temperatureUnit } = useGlobalContext();
+  const { temperatureUnit,setcurrCity,currCity } = useGlobalContext();
   const [favWeather, setFavWeather] = useState([]);
-  const {setIsLoading} = useCurrTempContext()
+  const navigation = useNavigation();
+  const {setIsLoading} = useCurrTempContext();
 
   useEffect(() => {
     async function fetchCities() {
@@ -22,8 +24,9 @@ const FavWidget = ({fontColor}) => {
     }
     fetchCities();
   }, []);
-
+  
   useEffect(() => {
+    setIsLoading(true);
     fetchFavWeather(cityData, temperatureUnit)
       .then(favWeatherData => {
         setFavWeather(favWeatherData);
@@ -31,13 +34,25 @@ const FavWidget = ({fontColor}) => {
       .catch(error => {
         console.error('Error fetching favorite weather data:', error);
       });
+      setIsLoading(false);
   }, [cityData, temperatureUnit]);
 
   handleDelete = async (index) => {
+    setIsLoading(true);
     await removeCity(favWeather[index].cityname);
     const updatedFavWeather = [...favWeather];
     updatedFavWeather.splice(index, 1);
     setFavWeather(updatedFavWeather);
+    setIsLoading(false);
+  };
+  
+
+  handleCitySelect = (cityname) => {
+    if (cityname !== currCity) {
+      setcurrCity(cityname);
+    } else {
+      navigation.navigate('Home');
+    }
   };
   
 
@@ -64,6 +79,9 @@ const FavWidget = ({fontColor}) => {
           <Swipeable
             renderRightActions={(progress, dragX) => renderRightActions(progress, dragX, index)}
           >
+          <TouchableWithoutFeedback
+            onPress={() => handleCitySelect(weather.cityname)}>
+
         <View key={index} style={[styles.container,{backgroundColor:getBackgroundColor(weather.weatherState)}]}>
           <View style={styles.leftContainer}>
             <View>
@@ -79,6 +97,7 @@ const FavWidget = ({fontColor}) => {
             </Text>
           </View>
         </View>
+        </TouchableWithoutFeedback>
         </Swipeable>
         </Animated.View>
       ))}
